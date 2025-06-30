@@ -5,16 +5,45 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+}
+
 body {
     background-color: #000000; /* Fundo totalmente preto */
     color: #ffffff; /* Texto totalmente branco */
     font-family: 'Space Mono', monospace; /* Fonte monoespaçada para o corpo do texto */
-    display: flex; /* Habilita flexbox para o layout com sidebar */
-    min-height: 100vh; /* Garante que o body ocupe a altura total da viewport */
-    overflow-x: hidden; /* Evita scroll horizontal */
     position: relative; /* Necessário para as scanlines fixas */
-    scroll-behavior: smooth; /* Rolagem suave para os links internos */
+    display: flex; /* Para organizar sidebar e content-wrapper */
+    /* Impede a seleção de texto */
+    -webkit-user-select: none;  /* Safari */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Standard */
 }
+
+/* Garante que títulos e outros elementos também não sejam selecionáveis */
+.section-title,
+.main-title,
+.subtitle,
+.slogan,
+.founder-info h3 {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Opcionalmente, permitir a seleção para links se for desejado */
+/*
+a {
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
+}
+*/
 
 /* Efeito de Scanlines (GLOBAL) */
 body::before {
@@ -41,39 +70,86 @@ body::before {
 
 /* -------------------- BARRA LATERAL (SIDEBAR) -------------------- */
 .sidebar {
-    width: 60px; /* Largura inicial recolhida */
-    background-color: #0a0a0a; /* Fundo da sidebar ligeiramente mais claro */
-    padding: 20px 0;
-    border-right: 1px solid #1a1a1a; /* Borda à direita */
+    background-color: #0a0a0a;
+    border-right: 1px solid #1a1a1a;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    position: fixed;
-    height: 100vh;
+    justify-content: flex-start;
+    position: fixed; /* Agora fixed para sobrepor o conteúdo */
     top: 0;
     left: 0;
-    z-index: 1000;
-    overflow: hidden; /* Esconde o conteúdo que transborda quando recolhido */
-    transition: width 0.3s ease-in-out; /* Transição suave para a abertura */
+    height: 100vh; /* Ocupa a altura total da viewport */
+    overflow-y: auto; /* Permite rolagem da sidebar se os itens não couberem */
+    transition: width 0.3s ease; /* Transição suave para a largura */
+    z-index: 10; /* Garante que a sidebar esteja acima do conteúdo */
+    width: 50px; /* Largura inicial da sidebar fechada */
+    align-items: center; /* Centraliza o conteúdo na largura menor */
+    padding-top: 20px; /* Espaço para o texto "ELDORIA" */
+    padding-bottom: 20px;
 }
 
 .sidebar:hover {
-    width: 250px; /* Largura expandida ao passar o mouse */
+    width: 250px; /* Largura quando o mouse passa por cima */
+}
+
+.sidebar-closed-text {
+    color: #ffffff;
+    font-size: 1.2em;
+    text-align: center;
+    writing-mode: vertical-lr; /* Texto vertical */
+    transform: rotate(180deg); /* Para ler de cima para baixo */
+    /* margin-top: 50%; /* Centraliza verticalmente (aproximadamente) */
+    letter-spacing: 5px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: absolute; /* Posição absoluta dentro da sidebar */
+    top: 50%; /* Centraliza o topo do texto no meio */
+    left: 50%; /* Centraliza a esquerda do texto no meio */
+    transform: translate(-50%, -50%) rotate(180deg); /* Ajusta para centralizar e rotacionar */
+    white-space: nowrap; /* Evita que o texto quebre linhas */
+}
+
+/* Regras para esconder/mostrar o conteúdo da sidebar */
+.sidebar:not(:hover) nav,
+.sidebar:not(:hover) .sidebar-footer {
+    display: none; /* Oculta o menu e footer quando a sidebar está fechada */
+}
+
+.sidebar:hover .sidebar-closed-text {
+    display: none; /* Oculta o texto vertical quando a sidebar está aberta */
+}
+
+/* Mostra a navegação e o footer apenas quando a sidebar é hoverizada */
+.sidebar:hover nav,
+.sidebar:hover .sidebar-footer {
+    display: flex; /* Garante que voltem a ser flex ou block conforme o original */
+    flex-direction: column; /* Necessário para a nav se manter em coluna */
+    width: 100%; /* Garante que ocupem a largura completa da sidebar expandida */
+}
+
+
+.sidebar nav {
+    width: 100%;
+    /* padding-top: 20px; /* Espaço no topo do menu quando aberto */
+    flex-grow: 1; /* Permite que a nav ocupe o espaço restante */
 }
 
 .sidebar nav ul {
     list-style: none;
     padding: 0;
-    margin-top: 50px;
+    margin: 0;
+    width: 100%;
 }
 
 .sidebar nav ul li {
-    margin-bottom: 10px;
+    margin: 0;
 }
 
 .sidebar nav ul li a {
     display: block;
-    padding: 10px 20px;
+    padding: 15px 25px;
     color: #ffffff;
     text-decoration: none;
     font-size: 0.9em;
@@ -81,56 +157,129 @@ body::before {
     transition: background-color 0.3s ease, color 0.3s ease;
     text-align: left;
     letter-spacing: 0.5px;
-    white-space: nowrap; /* Impede a quebra de linha do texto do menu */
-    overflow: hidden; /* Garante que o texto não apareça quando recolhido */
-    text-overflow: ellipsis; /* Adiciona "..." se o texto for cortado */
 }
 
 .sidebar nav ul li a:hover {
     background-color: #1a1a1a;
-    color: #ffffff; /* Mantém branco no hover */
+    color: #ffffff;
 }
 
 .sidebar-footer {
+    /* margin-top: auto; /* Empurra o footer para o final da sidebar */
+    padding: 20px;
     text-align: center;
     font-size: 0.7em;
     color: #888888;
-    padding: 20px;
     border-top: 1px solid #1a1a1a;
-    opacity: 0; /* Oculta o footer da sidebar quando recolhida */
-    transition: opacity 0.3s ease-in-out;
+    flex-shrink: 0; /* Não permite que encolha */
 }
 
-.sidebar:hover .sidebar-footer {
-    opacity: 1; /* Mostra o footer ao expandir */
-}
 
 /* -------------------- CONTEÚDO PRINCIPAL (content-wrapper) -------------------- */
 .content-wrapper {
-    margin-left: 60px; /* Desloca o conteúdo principal pela largura inicial da sidebar */
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: margin-left 0.3s ease-in-out; /* Transição para o deslocamento */
-    padding-bottom: 50px; /* Espaço para o footer principal */
+    flex-grow: 1; /* Ocupa o restante do espaço horizontal */
+    /* Ajustar a margem esquerda para não ser coberto pela sidebar fixa */
+    margin-left: 50px; /* Largura inicial da sidebar */
+    width: calc(100% - 50px); /* Largura total menos a sidebar inicial */
+    transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
-.sidebar:hover ~ .content-wrapper {
-    margin-left: 250px; /* Desloca o conteúdo ao expandir a sidebar */
+.sidebar:hover + .content-wrapper {
+    margin-left: 250px; /* Ajusta a margem quando a sidebar está aberta */
+    width: calc(100% - 250px);
 }
 
-/* -------------------- SEÇÃO DE CABEÇALHO (HERO SECTION) -------------------- */
-.hero-section {
+/* -------------------- SEÇÕES DE CONTEÚDO GERAIS (MANTENHA ESTES ESTILOS) -------------------- */
+.content-section {
     width: 100%;
-    padding: 20px;
-    min-height: 100vh;
+    max-width: 1200px;
+    padding: 80px 20px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
+    min-height: auto;
+}
+
+#inicio {
+    margin-bottom: 0px;
+    padding-bottom: 20px;
+}
+
+#fundadores {
+    padding-top: 0px;
+    margin-top: -50px;
+}
+
+.section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 2.5em;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 2px;
+    background-color: #ffffff;
+    margin: 15px auto 0 auto;
+}
+
+.section-text {
+    font-size: 1em;
+    line-height: 1.8;
+    color: #ffffff;
+    text-align: left;
+    margin: 20px auto 0 auto;
+    max-width: 800px;
+}
+
+.section-text p {
+    margin-bottom: 20px;
+}
+
+.section-text h3 {
+    font-size: 1.6em;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #cccccc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #333333;
+    padding-bottom: 8px;
+    text-align: center;
+}
+
+.section-text ul, .section-text ol {
+    margin-left: 30px;
+    margin-bottom: 20px;
+    list-style-type: square;
+    color: #e0e0e0;
+}
+
+.section-text li {
+    margin-bottom: 10px;
+}
+
+.section-text a {
+    color: #ffffff;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.section-text a:hover {
+    color: #cccccc;
+    text-decoration: none;
+}
+
+/* SEÇÃO: INÍCIO (HERO SECTION) - MANTENHA ESTES ESTILOS */
+.hero-section {
+    padding-top: 20px;
 }
 
 .logo-e-container {
@@ -139,26 +288,26 @@ body::before {
 }
 
 .logo-e {
-    font-family: 'serif'; /* NAVEGADORES TENTARÃO RENDERIZAR COM FONTES GÓTICAS INSTALADAS */
+    font-family: 'serif';
     font-size: 15em;
     color: #ffffff;
     text-shadow:
         0 0 5px rgba(255, 255, 255, 0.5),
-        0 0 15px rgba(255, 255, 255, 0.3), /* Brilho levemente mais intenso */
+        0 0 15px rgba(255, 255, 255, 0.3),
         0 0 25px rgba(255, 255, 255, 0.1);
     line-height: 0.8;
 }
 
 .main-title {
-    font-size: 2.2em; /* Título principal um pouco maior */
+    font-size: 2.2em;
     margin-bottom: 15px;
-    letter-spacing: 2px; /* Mais espaçamento */
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: #ffffff;
 }
 
 .subtitle {
-    font-size: 1.1em; /* Subtítulo um pouco maior */
+    font-size: 1.1em;
     margin-bottom: 20px;
     max-width: 700px;
     color: #ffffff;
@@ -175,7 +324,7 @@ body::before {
     margin-top: 30px;
     display: flex;
     justify-content: center;
-    gap: 50px; /* Mais espaçamento entre os links sociais */
+    gap: 50px;
 }
 
 .social-link {
@@ -187,15 +336,15 @@ body::before {
 }
 
 .social-link img {
-    width: 40px; /* Ícones sociais um pouco maiores */
+    width: 40px;
     height: 40px;
     margin-bottom: 10px;
-    filter: grayscale(100%) brightness(500%); /* Garante que fiquem brancos */
+    filter: grayscale(100%) brightness(500%);
     transition: transform 0.2s ease-in-out;
 }
 
 .social-link img:hover {
-    transform: scale(1.15); /* Efeito de hover um pouco mais pronunciado */
+    transform: scale(1.15);
 }
 
 .social-link span {
@@ -205,92 +354,151 @@ body::before {
     letter-spacing: 0.5px;
 }
 
-/* -------------------- SEÇÕES DE CONTEÚDO GERAIS -------------------- */
-.content-section {
-    width: 100%;
-    max-width: 1000px; /* Largura máxima para todas as seções de conteúdo */
-    padding: 100px 30px; /* Espaçamento interno mais generoso */
-    margin: 0 auto; /* Centraliza a seção */
-    text-align: center; /* Alinhamento padrão dos títulos */
-    border-top: 1px solid #111111; /* Linha divisória entre seções */
-}
-
-.section-title {
-    font-family: 'Space Mono', monospace;
-    font-size: 2.5em; /* Títulos de seção maiores */
-    color: #ffffff;
-    text-transform: uppercase;
-    margin-bottom: 50px; /* Mais espaçamento abaixo do título */
-    position: relative; /* Para o pseudo-elemento decorativo */
-}
-
-.section-title::after { /* Adiciona uma linha decorativa sob os títulos das seções */
-    content: '';
-    display: block;
-    width: 80px; /* Largura da linha */
-    height: 2px;
-    background-color: #ffffff; /* Linha branca */
-    margin: 20px auto 0 auto; /* Centraliza a linha e dá espaço */
-}
-
-.section-text {
-    font-size: 1em;
-    line-height: 1.8; /* Aumenta o espaçamento entre linhas para melhor legibilidade */
-    color: #ffffff;
-    text-align: left; /* Alinha o texto das seções à esquerda */
+/* SEÇÃO: FUNDADORES (Equipe) e MEMBROS - MANTENHA ESTES ESTILOS */
+.founders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    max-width: 1000px;
     margin: 0 auto;
-    max-width: 850px; /* Largura máxima para o texto das seções */
+    padding-top: 30px;
+    justify-content: center;
 }
 
-.section-text p {
-    margin-bottom: 25px; /* Mais espaçamento entre parágrafos */
+.founder-card {
+    background-color: #0a0a0a;
+    border: 1px solid #222222;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.section-text h3 {
-    font-size: 1.6em; /* Sub-títulos maiores */
-    margin-top: 40px; /* Mais margem superior */
-    margin-bottom: 20px;
-    color: #cccccc; /* Sub-títulos em cinza claro */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-bottom: 1px solid #333333; /* Borda sutil abaixo dos sub-títulos */
-    padding-bottom: 8px;
+.founder-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15);
 }
 
-.section-text ul, .section-text ol {
-    margin-left: 30px; /* Mais indentação */
-    margin-bottom: 30px;
-    list-style-type: square; /* Estilo de lista mais minimalista */
-    color: #e0e0e0; /* Cor para itens de lista */
+.founder-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 25px;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-.section-text li {
-    margin-bottom: 12px; /* Mais espaçamento entre itens de lista */
+.founder-info {
+    width: 100%;
 }
 
-.section-text a {
+.founder-info h3 {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.8em;
     color: #ffffff;
-    text-decoration: underline;
-    transition: color 0.3s ease;
+    margin-top: 0;
+    margin-bottom: 8px;
+    text-transform: uppercase;
 }
 
-.section-text a:hover {
-    color: #cccccc;
-    text-decoration: none;
+.founder-info .role {
+    font-size: 1em;
+    color: #aaaaaa;
+    margin-bottom: 12px;
 }
 
-/* Estilos para itens de serviço, metodologia, recursos e FAQ */
+.founder-info .handle {
+    font-size: 0.9em;
+    color: #888888;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.founder-info .description {
+    font-size: 0.95em;
+    line-height: 1.7;
+    color: #e0e0e0;
+    margin-bottom: 25px;
+}
+
+.founder-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.founder-skill {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 6px 12px;
+    font-size: 0.75em;
+    border-radius: 4px;
+    border: 1px solid #333333;
+    white-space: nowrap;
+}
+
+/* INÍCIO DAS REGRAS ESPECÍFICAS PARA MEMBROS - MANTENHA ESTES ESTILOS */
+#membros .founders-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    max-width: 800px;
+}
+
+#membros .founder-card {
+    padding: 20px;
+}
+
+#membros .founder-avatar {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+#membros .founder-info h3 {
+    font-size: 1.5em;
+}
+
+#membros .founder-info .role {
+    font-size: 0.9em;
+}
+
+#membros .founder-info .handle {
+    font-size: 0.8em;
+}
+
+#membros .founder-info .description {
+    font-size: 0.85em;
+    line-height: 1.6;
+}
+
+#membros .founder-skills {
+    gap: 6px;
+}
+
+#membros .founder-skill {
+    padding: 5px 10px;
+    font-size: 0.7em;
+}
+/* FIM DAS REGRAS ESPECÍFICAS PARA MEMBROS */
+
+
+/* Estilos para itens de serviço, metodologia, recursos e FAQ - MANTENHA ESTES ESTILOS */
 .service-item, .method-step, .resource-item, .faq-item {
-    background-color: #0a0a0a; /* Fundo ligeiramente diferente para blocos de conteúdo */
+    background-color: #0a0a0a;
     border: 1px solid #1a1a1a;
     padding: 30px;
-    margin-bottom: 30px; /* Espaçamento entre os blocos */
+    margin-bottom: 30px;
     text-align: left;
     transition: background-color 0.3s ease;
 }
 
 .service-item:hover, .method-step:hover, .resource-item:hover, .faq-item:hover {
-    background-color: #0d0d0d; /* Leve escurecimento no hover */
+    background-color: #0d0d0d;
 }
 
 .service-item h3, .method-step h3, .resource-item h3, .faq-item h3.faq-question {
@@ -299,12 +507,12 @@ body::before {
     margin-top: 0;
     margin-bottom: 15px;
     text-transform: uppercase;
-    cursor: pointer; /* Para indicar que é clicável no FAQ/Recursos */
+    cursor: pointer;
     position: relative;
-    padding-right: 30px; /* Espaço para o ícone */
+    padding-right: 30px;
 }
 
-/* Ícone para FAQ/Recursos (simulado com CSS) */
+/* Ícone para FAQ/Recursos (simulado com CSS) - MANTENHA ESTES ESTILOS */
 .faq-item h3.faq-question::after,
 .resource-item .read-more-button::after {
     content: '+';
@@ -318,9 +526,9 @@ body::before {
 }
 
 .faq-item h3.faq-question.active::after,
-.resource-item .read-more-button.active::after { /* Adicione uma classe 'active' com JS */
+.resource-item .read-more-button.active::after {
     content: '-';
-    transform: translateY(-50%) rotate(0deg); /* Ou um X, ou uma seta para cima */
+    transform: translateY(-50%) rotate(0deg);
 }
 
 .read-more-button {
@@ -342,158 +550,115 @@ body::before {
     border-color: #555555;
 }
 
-
-/* SEÇÃO: FUNDADORES (Equipe) */
-.founders-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsividade com minmax */
-    gap: 40px;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding-top: 30px;
-}
-
-.founder-card {
-    background-color: #0a0a0a;
-    border: 1px solid #222222;
-    padding: 30px; /* Mais padding */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: left;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.08); /* Sombra mais visível */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.founder-card:hover {
-    transform: translateY(-5px); /* Leve levantamento no hover */
-    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.15); /* Sombra mais intensa */
-}
-
-.founder-avatar {
-    width: 120px; /* Avatares um pouco maiores */
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 25px;
-    border: 3px solid #ffffff; /* Borda mais proeminente */
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Brilho no avatar */
-}
-
-.founder-info {
-    width: 100%;
-}
-
-.founder-info h3 {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.8em; /* Nome dos fundadores maior */
-    color: #ffffff;
-    margin-top: 0;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-}
-
-.founder-info .role {
-    font-size: 1em;
-    color: #aaaaaa;
-    margin-bottom: 12px;
-}
-
-.founder-info .handle {
-    font-size: 0.9em;
-    color: #888888;
-    margin-bottom: 20px;
-    font-style: italic; /* Handle em itálico */
-}
-
-.founder-info .description {
-    font-size: 0.95em; /* Descrição um pouco maior */
-    line-height: 1.7;
-    color: #e0e0e0;
-    margin-bottom: 25px;
-}
-
-.founder-skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px; /* Menor espaçamento entre as skills */
-    margin-top: 15px;
-    justify-content: center; /* Centraliza as skills */
-}
-
-.founder-skill {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    padding: 6px 12px; /* Más padding */
-    font-size: 0.75em; /* Skill tags um pouco mayores */
-    border-radius: 4px;
-    border: 1px solid #333333;
-    white-space: nowrap; /* Não quebra linha */
-}
-
-
-/* Rodapé Principal */
+/* Rodapé Principal - MANTENHA ESTES ESTILOS */
 .main-footer {
     width: 100%;
-    padding: 30px 0; /* Mais padding */
-    font-size: 0.8em; /* Texto do footer um pouco maior */
+    padding: 30px 0;
+    font-size: 0.8em;
     color: #aaaaaa;
     border-top: 1px solid #111111;
-    margin-top: 80px; /* Mais margem superior */
+    margin-top: 80px;
     text-align: center;
+    flex-shrink: 0;
 }
 
-/* -------------------- MEDIA QUERIES (RESPONSIVIDADE) -------------------- */
+.contact-discord {
+    margin-top: 20px;
+}
 
-/* Para telas menores que 768px (Mobile) - Sidebar continua no topo e se expande */
+.discord-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: #5865F2;
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.discord-button:hover {
+    background-color: #4752C4;
+}
+
+.discord-button img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.discord-info {
+    font-size: 0.8em;
+    color: #888888;
+    margin-top: 5px;
+}
+
+/* -------------------- MEDIA QUERIES (RESPONSIVIDADE) - AJUSTE CONFORME NECESSÁRIO -------------------- */
+
+/* Para telas menores que 768px (Mobile) */
 @media (max-width: 767px) {
+    body {
+        flex-direction: column;
+    }
+
     .sidebar {
         width: 100%;
         height: auto;
         position: relative;
         border-right: none;
         border-bottom: 1px solid #1a1a1a;
-        padding: 10px 0;
-        overflow: visible;
-        transition: none; /* Desabilita transição de largura em mobile */
+        padding: 10px 0; /* Ajustado para mobile */
+        overflow-x: auto;
+        white-space: nowrap;
+        justify-content: center; /* Centraliza itens na largura */
+    }
+
+    .sidebar-closed-text {
+        display: none; /* Não mostrar texto fechado em mobile */
     }
 
     .sidebar:hover {
+        width: 100%; /* Abrir totalmente em mobile */
+    }
+
+    .sidebar nav, .sidebar-footer {
+        display: flex; /* Certifica que o nav e footer apareçam */
+        flex-direction: row; /* Itens do menu em linha */
         width: 100%;
+        justify-content: center;
+        gap: 10px; /* Espaço entre os itens do menu */
+        padding: 0; /* Resetar padding da nav */
     }
 
     .sidebar nav ul {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: row; /* Itens do menu em linha */
         justify-content: center;
-        margin-top: 10px;
-    }
-
-    .sidebar nav ul li {
-        margin: 5px 8px;
+        width: auto; /* Deixa a largura ser definida pelo conteúdo */
     }
 
     .sidebar nav ul li a {
-        padding: 5px 10px;
+        padding: 8px 10px;
         font-size: 0.7em;
-        white-space: normal; /* Permite quebra de linha em mobile se necessário */
         text-align: center;
     }
+
     .sidebar-footer {
         display: none; /* Oculta o footer da sidebar em mobile */
     }
 
     .content-wrapper {
-        margin-left: 0;
-        padding-top: 0;
-    }
-    .sidebar:hover ~ .content-wrapper {
+        width: 100%;
         margin-left: 0;
     }
 
-    .hero-section {
-        min-height: 80vh;
-        padding-top: 20px;
+    .sidebar:hover + .content-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .content-section {
+        padding: 40px 15px;
     }
 
     .logo-e {
@@ -502,21 +667,10 @@ body::before {
 
     .main-title {
         font-size: 1.5em;
-        padding: 0 10px;
     }
 
-    .subtitle, .slogan, .section-text, .founder-card {
+    .subtitle, .slogan, .section-text {
         font-size: 0.9em;
-        padding: 0 15px;
-    }
-
-    .section-title {
-        font-size: 1.8em;
-        margin-bottom: 30px;
-    }
-    .section-title::after {
-        width: 60px;
-        margin: 15px auto 0 auto;
     }
 
     .social-link img {
@@ -533,69 +687,147 @@ body::before {
     }
 
     .founder-avatar {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
     }
 
     .founder-info h3 {
-        font-size: 1.3em;
+        font-size: 1.5em;
     }
     .founder-info .description {
         font-size: 0.85em;
     }
     .founder-skills {
-        justify-content: center; /* Garante centralização */
+        justify-content: center;
     }
 
-    .section-text h3 {
-        font-size: 1.2em;
-        margin-top: 25px;
-        margin-bottom: 15px;
+    .section-title {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    .section-title::after {
+        width: 50px;
+        margin-top: 10px;
+    }
+
+    .founders-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .founder-card {
+        padding: 20px;
     }
     .service-item, .method-step, .resource-item, .faq-item {
         padding: 20px;
         margin-bottom: 20px;
     }
+    .service-item h3, .method-step h3, .resource-item h3, .faq-item h3.faq-question {
+        font-size: 1.2em;
+    }
 }
 
 /* Para telas de tablet (768px a 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
+    body {
+        flex-direction: row;
+    }
     .sidebar {
-        width: 60px;
+        width: 60px; /* Largura fechada no tablet */
     }
     .sidebar:hover {
-        width: 200px;
+        width: 200px; /* Largura aberta no tablet */
     }
     .content-wrapper {
         margin-left: 60px;
+        width: calc(100% - 60px);
     }
-    .sidebar:hover ~ .content-wrapper {
+    .sidebar:hover + .content-wrapper {
         margin-left: 200px;
+        width: calc(100% - 200px);
     }
-
-    .logo-e {
-        font-size: 12em;
+    .sidebar-closed-text {
+        display: block; /* Garante que apareça */
+        font-size: 1em;
+        letter-spacing: 3px;
+        /* Re-ajustar centralização se necessário */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(180deg);
     }
-
-    .main-title {
-        font-size: 1.8em;
+    /* Regras para esconder/mostrar o conteúdo da sidebar */
+    .sidebar:not(:hover) nav,
+    .sidebar:not(:hover) .sidebar-footer {
+        display: none;
     }
-
-    .section-title {
-        font-size: 2.2em;
+    .sidebar:hover .sidebar-closed-text {
+        display: none;
     }
-
+    .sidebar:hover nav,
+    .sidebar:hover .sidebar-footer {
+        display: flex; /* Ajusta para flex para o layout interno */
+        flex-direction: column;
+        width: 100%;
+    }
+    .content-section {
+        padding: 60px 20px;
+    }
     .founders-grid {
         grid-template-columns: 1fr 1fr;
-    }
-    .founder-info .description {
-        font-size: 0.9em;
+        gap: 30px;
     }
 }
 
 /* Para telas de desktop (1024px e acima) */
 @media (min-width: 1024px) {
+    body {
+        flex-direction: row;
+    }
+    .sidebar {
+        width: 50px; /* Largura fechada no desktop */
+    }
+    .sidebar:hover {
+        width: 250px; /* Largura aberta no desktop */
+    }
+    .content-wrapper {
+        margin-left: 50px;
+        width: calc(100% - 50px);
+    }
+    .sidebar:hover + .content-wrapper {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+    }
+    .sidebar-closed-text {
+        display: block; /* Garante que apareça */
+        font-size: 1.2em;
+        letter-spacing: 5px;
+        /* Re-ajustar centralização se necessário */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(180deg);
+    }
+    /* Regras para esconder/mostrar o conteúdo da sidebar */
+    .sidebar:not(:hover) nav,
+    .sidebar:not(:hover) .sidebar-footer {
+        display: none;
+    }
+    .sidebar:hover .sidebar-closed-text {
+        display: none;
+    }
+    .sidebar:hover nav,
+    .sidebar:hover .sidebar-footer {
+        display: flex; /* Ajusta para flex para o layout interno */
+        flex-direction: column;
+        width: 100%;
+    }
+    .content-section {
+        padding: 100px 30px;
+    }
     .founders-grid {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+    }
+    #membros .founders-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
 }
