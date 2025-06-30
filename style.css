@@ -35,16 +35,6 @@ body {
     user-select: none;
 }
 
-/* Opcionalmente, permitir a seleção para links se for desejado */
-/*
-a {
-    -webkit-user-select: auto;
-    -moz-user-select: auto;
-    -ms-user-select: auto;
-    user-select: auto;
-}
-*/
-
 /* Efeito de Scanlines (GLOBAL) */
 body::before {
     content: '';
@@ -98,7 +88,6 @@ body::before {
     text-align: center;
     writing-mode: vertical-lr; /* Texto vertical */
     transform: rotate(180deg); /* Para ler de cima para baixo */
-    /* margin-top: 50%; /* Centraliza verticalmente (aproximadamente) */
     letter-spacing: 5px;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -129,10 +118,8 @@ body::before {
     width: 100%; /* Garante que ocupem a largura completa da sidebar expandida */
 }
 
-
 .sidebar nav {
     width: 100%;
-    /* padding-top: 20px; /* Espaço no topo do menu quando aberto */
     flex-grow: 1; /* Permite que a nav ocupe o espaço restante */
 }
 
@@ -165,7 +152,6 @@ body::before {
 }
 
 .sidebar-footer {
-    /* margin-top: auto; /* Empurra o footer para o final da sidebar */
     padding: 20px;
     text-align: center;
     font-size: 0.7em;
@@ -173,7 +159,6 @@ body::before {
     border-top: 1px solid #1a1a1a;
     flex-shrink: 0; /* Não permite que encolha */
 }
-
 
 /* -------------------- CONTEÚDO PRINCIPAL (content-wrapper) -------------------- */
 .content-wrapper {
@@ -189,7 +174,7 @@ body::before {
     width: calc(100% - 250px);
 }
 
-/* -------------------- SEÇÕES DE CONTEÚDO GERAIS (MANTENHA ESTES ESTILOS) -------------------- */
+/* -------------------- SEÇÕES DE CONTEÚDO GERAIS -------------------- */
 .content-section {
     width: 100%;
     max-width: 1200px;
@@ -277,7 +262,7 @@ body::before {
     text-decoration: none;
 }
 
-/* SEÇÃO: INÍCIO (HERO SECTION) - MANTENHA ESTES ESTILOS */
+/* SEÇÃO: INÍCIO (HERO SECTION) */
 .hero-section {
     padding-top: 20px;
 }
@@ -354,7 +339,7 @@ body::before {
     letter-spacing: 0.5px;
 }
 
-/* SEÇÃO: FUNDADORES (Equipe) e MEMBROS - MANTENHA ESTES ESTILOS */
+/* SEÇÃO: FUNDADORES (Equipe) e MEMBROS */
 .founders-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -443,7 +428,7 @@ body::before {
     white-space: nowrap;
 }
 
-/* INÍCIO DAS REGRAS ESPECÍFICAS PARA MEMBROS - MANTENHA ESTES ESTILOS */
+/* REGRAS ESPECÍFICAS PARA MEMBROS */
 #membros .founders-grid {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     max-width: 800px;
@@ -484,10 +469,8 @@ body::before {
     padding: 5px 10px;
     font-size: 0.7em;
 }
-/* FIM DAS REGRAS ESPECÍFICAS PARA MEMBROS */
 
-
-/* Estilos para itens de serviço, metodologia, recursos e FAQ - MANTENHA ESTES ESTILOS */
+/* Estilos para itens de serviço, metodologia, recursos e FAQ */
 .service-item, .method-step, .resource-item, .faq-item {
     background-color: #0a0a0a;
     border: 1px solid #1a1a1a;
@@ -512,7 +495,7 @@ body::before {
     padding-right: 30px;
 }
 
-/* Ícone para FAQ/Recursos (simulado com CSS) - MANTENHA ESTES ESTILOS */
+/* Ícone para FAQ/Recursos (simulado com CSS) */
 .faq-item h3.faq-question::after,
 .resource-item .read-more-button::after {
     content: '+';
@@ -550,7 +533,7 @@ body::before {
     border-color: #555555;
 }
 
-/* Rodapé Principal - MANTENHA ESTES ESTILOS */
+/* Rodapé Principal */
 .main-footer {
     width: 100%;
     padding: 30px 0;
@@ -593,7 +576,106 @@ body::before {
     margin-top: 5px;
 }
 
-/* -------------------- MEDIA QUERIES (RESPONSIVIDADE) - AJUSTE CONFORME NECESSÁRIO -------------------- */
+/* SEÇÃO: OPERAÇÕES (DESTAQUE COM CORES ORIGINAIS) */
+#operacoes {
+    background-color: #050505; /* Fundo ligeiramente diferente para destacar */
+    border-top: 2px solid #333333;
+    border-bottom: 2px solid #333333;
+    padding: 100px 20px; /* Mais padding para maior impacto */
+}
+
+#operacoes .section-title {
+    color: #ffffff; /* Título em branco, cor original */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(255, 255, 255, 0.2);
+    letter-spacing: 3px; /* Mais espaçamento para o título */
+}
+
+#operacoes .section-title::after {
+    background-color: #ffffff; /* Linha de destaque branca */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    width: 120px; /* Linha mais larga */
+}
+
+.section-subtitle-impact {
+    color: #e74c3c; /* Or any strong, contrasting color */
+    font-size: 1.5em; /* Make it stand out */
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px rgba(231, 76, 60, 0.5); /* Subtle glow */
+}
+
+/* Styling for the small Eldoria logo in Operations section */
+.logo-e-container-small {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo-e-small {
+    font-family: 'Space Mono', monospace;
+    font-size: 4em; /* Adjust size as needed */
+    color: #FFFFFF; /* AGORA É BRANCO PURO */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6); /* Glow mais proeminente e branco */
+    display: inline-block; /* Allows vertical alignment if needed */
+    line-height: 1; /* Adjust vertical spacing */
+}
+
+.operation-item {
+    background-color: #0f0f0f; /* Fundo mais escuro para os itens de operação */
+    border: 2px solid #333333; /* Borda em cinza escuro, alinhado ao tema */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.08); /* Sombra que simula brilho branco sutil */
+    margin-bottom: 40px; /* Mais espaço entre os itens */
+    transition: all 0.3s ease-in-out;
+}
+
+.operation-item:hover {
+    transform: translateY(-8px) scale(1.02); /* Leve levantamento e zoom no hover */
+    background-color: #1a1a1a; /* Fundo mais claro no hover */
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.15); /* Brilho mais intenso no hover */
+}
+
+.operation-item h3 {
+    color: #ffffff; /* Título do item em branco */
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+    font-size: 1.6em; /* Título maior */
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #555555; /* Linha tracejada em cinza */
+    padding-bottom: 10px;
+}
+
+.operation-item p {
+    color: #e0e0e0; /* Texto em cinza claro */
+    margin-bottom: 15px;
+    line-height: 1.7;
+    font-size: 1em;
+}
+
+.operation-item ul {
+    list-style-type: none; /* Remove bullet padrão */
+    padding-left: 0;
+    margin-top: 15px;
+}
+
+.operation-item ul li {
+    position: relative;
+    padding-left: 25px; /* Espaço para o novo bullet */
+    margin-bottom: 8px;
+    color: #bbbbbb;
+    font-size: 0.95em;
+}
+
+.operation-item ul li::before {
+    content: '>>'; /* Novo bullet estilizado */
+    color: #ffffff; /* Bullet em branco */
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-weight: bold;
+}
+
+
+/* -------------------- MEDIA QUERIES (RESPONSIVIDADE) -------------------- */
 
 /* Para telas menores que 768px (Mobile) */
 @media (max-width: 767px) {
@@ -724,6 +806,30 @@ body::before {
     }
     .service-item h3, .method-step h3, .resource-item h3, .faq-item h3.faq-question {
         font-size: 1.2em;
+    }
+    /* Ajustes para mobile na seção de operações */
+    #operacoes {
+        padding: 50px 15px;
+    }
+    #operacoes .section-title {
+        font-size: 1.6em;
+        letter-spacing: 1px;
+    }
+    #operacoes .section-title::after {
+        width: 80px;
+    }
+    .operation-item {
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+    .operation-item h3 {
+        font-size: 1.3em;
+    }
+    .operation-item p {
+        font-size: 0.9em;
+    }
+    .operation-item ul li {
+        font-size: 0.85em;
     }
 }
 
