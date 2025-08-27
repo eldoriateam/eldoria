@@ -3,109 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eldoria Team - Defesa Digital e Combate ao Cybercrime</title>
-    <link rel="icon" type="image/png" href="https://media.discordapp.net/attachments/1399914131376832542/1399914146568343803/image.png?ex=688abb25&is=688969a5&hm=efcf17ab4eaea699ef0e4a50bfd512a31d7d0cad4400248c2161841ddd5eda0d&=&format=webp&quality=lossless">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            /* Filtro para deixar tudo em preto e branco */
+            filter: grayscale(100%);
+        }
+
+        #video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeIn 1s ease-in-out;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .container:hover {
+            transform: rotateY(10deg) rotateX(10deg) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        h2 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+            position: relative;
+            animation: glitch 1s infinite;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: #888; /* Tom de cinza */
+            animation: typing 2s steps(20) infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0); }
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 50px; }
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-group i {
+            color: #ccc;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            outline: none;
+            color: #fff;
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        .input-group:focus-within {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(136, 136, 136, 0.5); /* Sombra em cinza */
+        }
+
+        .input-group:focus-within i {
+            color: #888; /* Icone em tom de cinza */
+        }
+
+        button {
+            padding: 0.8rem;
+            background-color: #555; /* Botão em tom de cinza */
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        button:hover {
+            background-color: #444; /* Tom de cinza mais escuro no hover */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(136, 136, 136, 0.5); /* Sombra em cinza */
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .message {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            color: #ccc;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888; /* Footer em tom de cinza */
+            font-size: 0.9rem;
+            text-align: center;
+            z-index: 3;
+        }
+    </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <div class="sidebar-closed-text">ELDORIA</div>
-        <nav>
-            <ul>
-                <li><a href="#inicio">Início</a></li>
-                <li><a href="#fundadores">Fundadores</a></li>
-                <li><a href="#membros">Membros</a></li>
-            </ul>
-        </nav>
-        <div class="sidebar-footer">
-            <p>&copy; 2025 Eldoria Team</p>
+    <video id="video-bg" autoplay muted loop>
+        <source src="https://i.pinimg.com/originals/ca/0e/88/ca0e887559a3d5e1dd0ba81dc80c73d6.gif" type="video/mp4">
+        Seu navegador não suporta vídeos.
+    </video>
+
+    <div class="container">
+        <div class="form-container">
+            <form id="loginForm" class="form">
+                <h2>Entrar</h2>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginEmail" placeholder="E-mail" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Senha" required>
+                </div>
+                <button type="submit">Entrar</button>
+                <p id="loginMessage" class="message"></p>
+            </form>
         </div>
-    </aside>
-
-    <div class="content-wrapper">
-        <!-- Seção Início -->
-        <section id="inicio" class="hero-section content-section">
-            <div class="logo-e-container">
-                <h1 class="logo-e">𝕰</h1>
-            </div>
-            <h2 class="main-title">ELDORIA TEAM</h2>
-            <p class="subtitle"></p>
-            <p class="slogan">Only the best on our side.</p>
-        </section>
-
-        <!-- Seção Fundadores -->
-        <section id="fundadores" class="content-section">
-            <h2 class="section-title">NOSSOS FUNDADORES</h2>
-            <div class="founders-grid">
-                <div class="founder-card">
-                    <img src="https://i.pinimg.com/736x/b5/d4/7d/b5d47d058c0969e055051114fdf73cd9.jpg" alt="Avatar Icky" class="founder-avatar">
-                    <div class="founder-info">
-                        <h3>ICKY</h3>
-                        <p class="role"> / PROPRIETÁRIO</p>
-                        <p class="handle">@4egv</p>
-                        <p class="description"></p>
-                        <div class="founder-skills">
-                            <span class="founder-skill">OSINT Avançado</span>
-                            <span class="founder-skill">Engenharia Social</span>
-                            <span class="founder-skill">Engenharia Reversa</span>
-                            <span class="founder-skill">HUMINT</span>
-                            <span class="founder-skill">Testes de Penetração</span>
-                            <span class="founder-skill">Hacking Ético</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="founder-card">
-                    <img src="https://i.pinimg.com/736x/46/25/87/462587e44d1465aa72e35db8b08ce78b.jpg" alt="Avatar Noir" class="founder-avatar">
-                    <div class="founder-info">
-                        <h3>NOIR</h3>
-                        <p class="role"> / PROPRIETÁRIO</p>
-                        <p class="handle">@noirsec</p>
-                        <p class="description"></p>
-                        <div class="founder-skills">
-                            <span class="founder-skill">Análise Forense</span>
-                            <span class="founder-skill">Engenharia Reversa</span>
-                            <span class="founder-skill">OSINT</span>
-                            <span class="founder-skill">Criptografia Avançada</span>
-                            <span class="founder-skill">Forensics Digital</span>
-                            <span class="founder-skill">Hacking Ético</span>
-                            <span class="founder-skill">Testes de Penetração</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção Membros -->
-        <section id="membros" class="content-section">
-            <h2 class="section-title">NOSSOS MEMBROS</h2>
-            <div class="founders-grid">
-                <div class="founder-card">
-                    <img src="https://i.pinimg.com/736x/67/aa/ee/67aaee1e1e4760aa72608b9de6241a45.jpg" alt="Avatar ZN" class="founder-avatar">
-                    <div class="founder-info">
-                        <h3>ZN</h3>
-                        <p class="role">COMUNICAÇÕES SEGURAS E SUPORTE DE EVIDÊNCIAS</p>
-                        <p class="handle">@bo5e</p>
-                        <p class="description"></p>
-                        <div class="founder-skills">
-                            <span class="founder-skill">Engenharia Social</span>
-                            <span class="founder-skill">Comunicação Criptografada</span>
-                            <span class="founder-skill">Organização de Dados</span>
-                            <span class="founder-skill">Protocolos de Segurança</span>
-                            <span class="founder-skill">Coleta de Evidências</span>
-                            <span class="founder-skill">Gerenciamento de Informações</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="main-footer">
-            <p>&copy; 2025 Eldoria Team. Todos os direitos reservados.</p>
-        </footer>
     </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script>
+        // Configuração do seu projeto Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyATtWGKWNcj082F9Rnpbq86msnhTGjeqFo",
+            authDomain: "eldoriateam-1e08a.firebaseapp.com",
+            projectId: "eldoriateam-1e08a",
+            storageBucket: "eldoriateam-1e08a.firebasestorage.app",
+            messagingSenderId: "170246244541",
+            appId: "1:170246244541:web:9ec59db845be2c275e0fd4"
+        };
+
+        // Inicialize o Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginMessage = document.getElementById('loginMessage');
+            
+            // Usando a função do Firebase para login
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Login bem-sucedido
+                    loginMessage.textContent = "Login bem-sucedido!";
+                    loginMessage.style.color = "lightgreen";
+                    console.log("Usuário logado:", userCredential.user);
+
+                    // Redirecionar o usuário ou fazer outra ação
+                })
+                .catch((error) => {
+                    // Ocorreu um erro no login
+                    const errorCode = error.code;
+                    
+                    if (errorCode === 'auth/wrong-password') {
+                        loginMessage.textContent = "Senha incorreta!";
+                        loginMessage.style.color = "lightcoral";
+                    } else if (errorCode === 'auth/user-not-found') {
+                        loginMessage.textContent = "E-mail não cadastrado!";
+                        loginMessage.style.color = "lightcoral";
+                    } else if (errorCode === 'auth/invalid-email') {
+                         loginMessage.textContent = "Formato de e-mail inválido!";
+                         loginMessage.style.color = "lightcoral";
+                    } else {
+                        loginMessage.textContent = "Ocorreu um erro. Tente novamente.";
+                        loginMessage.style.color = "lightcoral";
+                    }
+                    console.error("Erro no login:", error);
+                });
+        });
+    </script>
 </body>
 </html>
-
