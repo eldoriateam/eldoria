@@ -220,7 +220,7 @@
                 <h2>Entrar</h2>
                 <div class="input-group">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="loginEmail" placeholder="E-mail" required>
+                    <input type="email" id="loginEmail" placeholder="E-mail" required>
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
@@ -235,14 +235,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script>
-        // Configuração do seu projeto Firebase
+        // Nova configuração do seu projeto Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyATtWGKWNcj082F9Rnpbq86msnhTGjeqFo",
-            authDomain: "eldoriateam-1e08a.firebaseapp.com",
-            projectId: "eldoriateam-1e08a",
-            storageBucket: "eldoriateam-1e08a.firebasestorage.app",
-            messagingSenderId: "170246244541",
-            appId: "1:170246244541:web:9ec59db845be2c275e0fd4"
+            apiKey: "AIzaSyAf4XkKKukT8iIShBeGVycuWDTpOZoYutA",
+            authDomain: "eldoria-d8f4b.firebaseapp.com",
+            projectId: "eldoria-d8f4b",
+            storageBucket: "eldoria-d8f4b.firebasestorage.app",
+            messagingSenderId: "451330040914",
+            appId: "1:451330040914:web:25e74e43f210608af3eb8b"
         };
 
         // Inicialize o Firebase
@@ -262,7 +262,8 @@
                     loginMessage.style.color = "lightgreen";
                     console.log("Usuário logado:", userCredential.user);
 
-                    // Redirecionar o usuário ou fazer outra ação
+                    // Redirecionar o usuário para a página pós-login
+                    // window.location.href = "home_page.html";
                 })
                 .catch((error) => {
                     // Ocorreu um erro no login
