@@ -22,7 +22,6 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
-            /* Filtro para deixar tudo em preto e branco */
             filter: grayscale(100%);
         }
 
@@ -80,29 +79,12 @@
             animation: glitch 1s infinite;
         }
 
-        h2::after {
-            content: "";
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 3px;
-            background: #888; /* Tom de cinza */
-            animation: typing 2s steps(20) infinite;
-        }
-
         @keyframes glitch {
             0% { transform: translate(0); }
             25% { transform: translate(-2px, 2px); }
             50% { transform: translate(2px, -2px); }
             75% { transform: translate(-2px, 2px); }
             100% { transform: translate(0); }
-        }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 50px; }
         }
 
         .input-group {
@@ -137,16 +119,16 @@
 
         .input-group:focus-within {
             background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 10px rgba(136, 136, 136, 0.5); /* Sombra em cinza */
+            box-shadow: 0 0 10px rgba(136, 136, 136, 0.5);
         }
 
         .input-group:focus-within i {
-            color: #888; /* Icone em tom de cinza */
+            color: #888;
         }
 
         button {
             padding: 0.8rem;
-            background-color: #555; /* Botão em tom de cinza */
+            background-color: #555;
             color: white;
             border: none;
             border-radius: 25px;
@@ -171,9 +153,9 @@
         }
 
         button:hover {
-            background-color: #444; /* Tom de cinza mais escuro no hover */
+            background-color: #444;
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(136, 136, 136, 0.5); /* Sombra em cinza */
+            box-shadow: 0 5px 15px rgba(136, 136, 136, 0.5);
         }
 
         button:active {
@@ -201,10 +183,11 @@
             bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            color: #888; /* Footer em tom de cinza */
+            color: #888;
             font-size: 0.9rem;
             text-align: center;
             z-index: 3;
+            opacity: 0.4; /* Opacidade diminuída aqui */
         }
     </style>
 </head>
@@ -217,7 +200,7 @@
     <div class="container">
         <div class="form-container">
             <form id="loginForm" class="form">
-                <h2>Entrar</h2>
+                <h2>Login</h2>
                 <div class="input-group">
                     <i class="fas fa-user"></i>
                     <input type="email" id="loginEmail" placeholder="E-mail" required>
@@ -232,10 +215,14 @@
         </div>
     </div>
     
+    <footer>
+        eldoriateam
+    </footer>
+
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script>
-        // Nova configuração do seu projeto Firebase
+        // Configuração do seu projeto Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAf4XkKKukT8iIShBeGVycuWDTpOZoYutA",
             authDomain: "eldoria-d8f4b.firebaseapp.com",
@@ -244,8 +231,6 @@
             messagingSenderId: "451330040914",
             appId: "1:451330040914:web:25e74e43f210608af3eb8b"
         };
-
-        // Inicialize o Firebase
         firebase.initializeApp(firebaseConfig);
 
         document.getElementById('loginForm').addEventListener('submit', function (e) {
@@ -254,7 +239,6 @@
             const password = document.getElementById('loginPassword').value;
             const loginMessage = document.getElementById('loginMessage');
             
-            // Usando a função do Firebase para login
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     // Login bem-sucedido
@@ -262,11 +246,10 @@
                     loginMessage.style.color = "lightgreen";
                     console.log("Usuário logado:", userCredential.user);
 
-                    // Redirecionar o usuário para a página pós-login
-                    // window.location.href = "home_page.html";
+                    // REDIRECIONAMENTO PARA home.html
+                    window.location.href = "home.html";
                 })
                 .catch((error) => {
-                    // Ocorreu um erro no login
                     const errorCode = error.code;
                     
                     if (errorCode === 'auth/wrong-password') {
