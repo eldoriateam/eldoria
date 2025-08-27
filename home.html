@@ -274,13 +274,11 @@
             padding: 1.5rem;
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            flex: 1;
         }
 
         .chat-messages {
             flex: 1;
-            min-height: 300px;
-            max-height: 60vh;
+            height: 300px; /* Altura fixa para a janela de chat */
             overflow-y: auto;
             padding: 1rem;
             border-radius: 8px;
@@ -309,11 +307,10 @@
             align-self: flex-start;
             border-bottom-left-radius: 0;
         }
-        
+
         .chat-form {
             display: flex;
             gap: 0.5rem;
-            margin-top: auto; /* Garante que o input fique na parte de baixo */
         }
 
         .chat-form input,
@@ -342,18 +339,6 @@
         .chat-form button:hover {
             background-color: #0056b3;
         }
-
-        .typing-indicator {
-            align-self: flex-start;
-            background-color: #333;
-            padding: 0.8rem 1.5rem;
-            border-radius: 15px;
-            border-bottom-left-radius: 0;
-            display: inline-block;
-            animation: fadeIn 0.5s ease-in-out;
-            color: #888;
-        }
-        
     </style>
 </head>
 <body>
@@ -364,7 +349,7 @@
 
     <div class="dashboard-container">
         <div class="sidebar">
-            <div class="sidebar-logo">ELDORIA</div>
+            <div class="sidebar-logo">LOGO</div>
             <nav class="sidebar-nav">
                 <a href="#" class="nav-link active" data-page="painel"><i class="fas fa-desktop"></i> Painel</a>
                 <a href="#" class="nav-link" data-page="consultas"><i class="fas fa-search"></i> Consultas</a>
@@ -474,7 +459,7 @@
                     </div>
                     <div class="chat-container">
                         <div id="chat-messages" class="chat-messages">
-                            <div class="chat-message ai">Olá! Sou a IA da Eldoria. Como posso ajudar a equipe?</div>
+                            <div class="chat-message ai">Olá! Como posso te ajudar hoje?</div>
                         </div>
                         <form id="chat-form" class="chat-form">
                             <textarea id="chat-input" placeholder="Digite sua mensagem..." required></textarea>
@@ -482,7 +467,6 @@
                         </form>
                     </div>
                 </div>
-
             </main>
         </div>
     </div>
@@ -566,6 +550,7 @@
             });
         });
 
+        // Função para alternar as seções da página
         function changePage(pageId) {
             document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
             document.querySelectorAll('.dashboard-page').forEach(page => page.classList.remove('active'));
@@ -585,6 +570,7 @@
             });
         });
 
+        // Função para a barra de pesquisa
         document.getElementById('search-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const query = e.target.value;
@@ -597,37 +583,21 @@
             }
         });
 
+        // Garante que a página 'Painel' seja a primeira a aparecer
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#page-painel').classList.add('active');
         });
 
+        // Funções para os botões da Eldoria IA
         function showApiDocs() {
             alert('Documentação da API:\n\n' +
-                'Endpoint Principal: POST /api/chat\n' +
-                'Parâmetros (POST/GET):\n' +
-                '- tokenapi (obrigatório): Seu token de autenticação\n' +
-                '- model (opcional): Modelo de IA (padrão: gpt-4o-mini)\n' +
-                '- prompt (obrigatório): Mensagem para a IA\n' +
-                '- personality (opcional): Personalidade da IA\n' +
-                '- tk (opcional): Token de conversação para histórico\n\n' +
-                'Exemplo de Requisição POST:\n' +
-                '{\n  "tokenapi": "TK-HSS-128749505920",\n  "model": "gpt-4o-mini",\n  "prompt": "Olá, como você está?",\n  "personality": "seja amigável e responda de forma resumida",\n  "tk": "conversation_token_here"\n}' +
-                '\n\nExemplo de Requisição GET:\n' +
-                'GET /api/chat?tokenapi=TK-HSS-128749505920&model=gpt-4o-mini&prompt=Olá&personality=seja%20amigável&tk=conversation_token_here');
+                'Não há API configurada no momento. Para a funcionalidade do chat, o código da API precisa ser inserido.');
         }
 
-        // --- Funções do Chat ---
+        // --- Funções do Chat sem API ---
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
         const chatMessages = document.getElementById('chat-messages');
-
-        // Dados da API da Karanon AI
-        const apiToken = 'TK-HSS-128749505920';
-        const apiURL = 'https://karanon.onrender.com/api/chat';
-        const model = 'gpt-4o-mini';
-        const personality = 'Você é a assistente de inteligência artificial da Eldoria Team. Sua função é auxiliar a equipe com tarefas, tirar dúvidas e fornecer informações de forma útil e direta. Mantenha um tom profissional, mas acessível, e foque em ajudar os membros da equipe a serem mais produtivos.';
-        
-        let conversationToken = null; // Para manter o histórico
 
         // Adiciona uma mensagem ao chat
         function addMessage(text, sender) {
@@ -638,69 +608,7 @@
             chatMessages.scrollTop = chatMessages.scrollHeight; // Rola para o final
         }
 
-        // Função para simular o "digitando..."
-        let typingIndicator = null;
-        function showTypingIndicator() {
-            if (!typingIndicator) {
-                typingIndicator = document.createElement('div');
-                typingIndicator.classList.add('typing-indicator');
-                typingIndicator.textContent = 'Digitando...';
-                chatMessages.appendChild(typingIndicator);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-        }
-        function hideTypingIndicator() {
-            if (typingIndicator) {
-                typingIndicator.remove();
-                typingIndicator = null;
-            }
-        }
-
-        // Função para enviar a mensagem para a API
-        async function sendToAPI(prompt) {
-            showTypingIndicator(); // Mostra o "Digitando..."
-
-            const data = {
-                tokenapi: apiToken,
-                prompt: prompt,
-                model: model,
-                personality: personality,
-                tk: conversationToken // Envia o token de conversação, se existir
-            };
-
-            try {
-                const response = await fetch(apiURL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                hideTypingIndicator(); // Esconde o "Digitando..."
-                
-                if (!response.ok) {
-                    throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
-                }
-                
-                const responseData = await response.json();
-                
-                // Exibe a resposta da IA no chat
-                addMessage(responseData.response, 'ai');
-
-                // Atualiza o token de conversação para o próximo prompt
-                if (responseData.tk) {
-                    conversationToken = responseData.tk;
-                }
-                
-            } catch (error) {
-                hideTypingIndicator(); // Esconde o "Digitando..." em caso de erro
-                console.error("Erro ao se comunicar com a API:", error);
-                addMessage("Desculpe, não consegui me conectar com a IA. Tente novamente mais tarde.", 'ai');
-            }
-        }
-
-        // Lida com o envio do formulário de chat
+        // Lida com o envio do formulário de chat (apenas para exibição)
         chatForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const userPrompt = chatInput.value.trim();
@@ -708,15 +616,11 @@
             if (userPrompt) {
                 addMessage(userPrompt, 'user');
                 chatInput.value = '';
-                sendToAPI(userPrompt);
-            }
-        });
-
-        // Permite enviar com a tecla Enter
-        chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                chatForm.dispatchEvent(new Event('submit'));
+                
+                // Mensagem de exemplo que a IA responderia
+                setTimeout(() => {
+                    addMessage("Olá, sua mensagem foi recebida! Esta é uma resposta de demonstração, pois a API foi removida do código.", 'ai');
+                }, 1000);
             }
         });
     </script>
