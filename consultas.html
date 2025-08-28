@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Consultas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Shared Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            filter: grayscale(100%);
+        }
+
+        #video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        .dashboard-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 1rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .sidebar-logo {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        /* New styles for the image logo */
+        .sidebar-logo img {
+            width: 220px; /* Adjust the width as needed */
+            height: auto;
+            object-fit: contain;
+            filter: grayscale(100%); /* Keeps the logo in grayscale to match the theme */
+        }
+
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease, border-left 0.3s ease;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-left: 3px solid #888;
+        }
+        
+        .sidebar-nav a i {
+            font-size: 1.2rem;
+        }
+
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-bar {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+        }
+
+        .search-bar i {
+            color: #ccc;
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding-left: 0.5rem;
+            outline: none;
+            flex: 1;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+        
+        .dashboard-page {
+            display: none;
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .dashboard-page.active {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .welcome-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            line-height: 1.6;
+        }
+
+        .welcome-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .module-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #ccc;
+        }
+        
+        .module-card h4 {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-card p {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .action-button {
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 0.6rem 1.5rem;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .action-button:hover {
+            background-color: #444;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 20, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            animation: scaleIn 0.3s;
+        }
+
+        .modal-close {
+            color: #aaa;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-content h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            color: #bbb;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #555;
+            color: #fff;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .modal-button {
+            background-color: #5865F2; /* Cor inspirada no Discord */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .modal-button:hover {
+            background-color: #4752c4; /* Tonalidade mais escura do azul */
+        }
+        
+        .modal-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            text-align: left;
+            display: none; /* Inicia oculto */
+        }
+
+        .modal-result.show {
+            display: block;
+        }
+
+        .modal-result.error {
+            background-color: rgba(240, 71, 71, 0.2); /* Cor de erro */
+            border-color: #f04747;
+            color: #f04747;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .data-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        .data-item i {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+        .data-item span {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <video id="video-bg" autoplay muted loop>
+        <source src="https://i.pinimg.com/originals/ca/0e/88/ca0e887559a3d5e1dd0ba81dc80c73d6.gif" type="video/mp4">
+        Seu navegador não suporta vídeos.
+    </video>
+
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <img src="https://i.pinimg.com/736x/da/70/57/da70575a02519773e664ecfde7ac2211.jpg" alt="Logo da Eldoria">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="painel.html" class="nav-link active"><i class="fas fa-desktop"></i> Painel</a>
+                <a href="consultas.html" class="nav-link"><i class="fas fa-search"></i> Consultas</a>
+            </nav>
+        </div>
+
+
+        <div class="main-content">
+            <header class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Pesquisar...">
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-user-circle"></i> <span id="user-info">Carregando...</span>
+                </div>
+            </header>
+
+            <main class="dashboard-content">
+                <div class="dashboard-page active" id="page-consultas">
+                    <div class="welcome-card">
+                        <h3>Página de Consultas</h3>
+                        <p>Realize consultas de forma rápida e segura.</p>
+                    </div>
+
+                    <div class="modules-grid">
+                        <div class="module-card" data-modal="cpfModal">
+                            <i class="fas fa-id-card"></i>
+                            <h4>Consultar CPF</h4>
+                            <p>Busque dados de uma pessoa por CPF.</p>
+                        </div>
+
+                        <div class="module-card" data-modal="placaModal">
+                            <i class="fas fa-car"></i>
+                            <h4>Em Desenvolvimento...</h4>
+                            <p></p>
+                        </div>
+
+                        <div class="module-card" data-modal="telefoneModal">
+                            <i class="fas fa-phone"></i>
+                            <h4>Em Desenvolvimento...</h4>
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="cpfModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h4>Consulta de CPF</h4>
+            <p>Digite o CPF para consultar.</p>
+            <div class="modal-form">
+                <input type="text" id="cpf-input" class="modal-input" placeholder="Ex: 123.456.789-00">
+                <button id="cpf-button" class="modal-button"><i class="fas fa-search"></i> Consultar</button>
+            </div>
+            <div id="cpf-result" class="modal-result"></div>
+        </div>
+    </div>
+
+    <div id="placaModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h4>Consulta de Placa</h4>
+            <p>Em Desenvolvimento...</p>
+            <div class="modal-form">
+                <input type="text" id="placa-input" class="modal-input" placeholder="Ex: ABC1B23">
+                <button id="placa-button" class="modal-button"><i class="fas fa-search"></i> Consultar</button>
+            </div>
+            <div id="placa-result" class="modal-result"></div>
+        </div>
+    </div>
+
+    <div id="telefoneModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h4>Consulta de Telefone</h4>
+            <p>Em Desenvolvimento...</p>
+            <div class="modal-form">
+                <input type="text" id="telefone-input" class="modal-input" placeholder="Ex: (11) 98765-4321">
+                <button id="telefone-button" class="modal-button"><i class="fas fa-search"></i> Consultar</button>
+            </div>
+            <div id="telefone-result" class="modal-result"></div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAf4XkKKukT8iIShBeGVycuWDTpOZoYutA",
+            authDomain: "eldoria-d8f4b.firebaseapp.com",
+            projectId: "eldoria-d8f4b",
+            storageBucket: "eldoria-d8f4b.firebasestorage.app",
+            messagingSenderId: "451330040914",
+            appId: "1:451330040914:web:25e74e43f210608af3eb8b"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('user-info').textContent = user.email;
+            } else {
+                window.location.href = "index.html"; 
+            }
+        });
+
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = e.target.value;
+                if (query.trim() !== '') {
+                    alert(`Pesquisando por: ${query}`);
+                    e.target.value = '';
+                }
+            }
+        });
+
+        const modalCards = document.querySelectorAll('.module-card[data-modal]');
+        const modals = document.querySelectorAll('.modal');
+        const closeButtons = document.querySelectorAll('.modal-close');
+
+        modalCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const modalId = card.dataset.modal;
+                document.getElementById(modalId).style.display = 'flex';
+                // Reset input and result on modal open
+                const input = document.getElementById(modalId.replace('Modal', '-input'));
+                const result = document.getElementById(modalId.replace('Modal', '-result'));
+                if (input) input.value = '';
+                if (result) {
+                    result.classList.remove('show', 'error');
+                    result.innerHTML = '';
+                }
+            });
+        });
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.closest('.modal').style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', (e) => {
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // --- CPF API Integration ---
+        const API_TOKEN = "8da1c72682d11d380ecbd0d43b9c3d668e7d90a95ee4c5cbcb1a26fefbbdd9ce";
+        const BASE_URL = "https://api.dataget.site/api/v1";
+
+        async function consultarCPF(cpf) {
+            const cpfLimpo = cpf.replace(/[^\d]/g, "");
+            if (cpfLimpo.length !== 11) {
+                return { success: false, error: "CPF deve ter 11 dígitos" };
+            }
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                
+                const response = await fetch(`${BASE_URL}/cpf/${cpfLimpo}`, {
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_TOKEN}` },
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    return { success: false, error: errorData.error || `Erro na consulta do CPF: ${response.status}` };
+                }
+                
+                const data = await response.json();
+                return { success: true, data };
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    return { success: false, error: "A API demorou muito para responder." };
+                }
+                return { success: false, error: "Erro de conexão com a API. Verifique sua conexão." };
+            }
+        }
+
+        function createResultHtml(data) {
+            if (!data) return '';
+            let html = `
+                <div class="data-item">
+                    <i class="fas fa-user"></i>
+                    <span>Nome: <strong>${data.NOME || 'Não disponível'}</strong></span>
+                </div>
+                <div class="data-item">
+                    <i class="fas fa-id-card"></i>
+                    <span>CPF: <strong>${data.CPF || 'Não disponível'}</strong></span>
+                </div>
+                <div class="data-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Nascimento: <strong>${data.NASC || 'Não disponível'}</strong></span>
+                </div>
+                <div class="data-item">
+                    <i class="fas fa-venus-mars"></i>
+                    <span>Sexo: <strong>${data.SEXO || 'Não disponível'}</strong></span>
+                </div>
+                <div class="data-item">
+                    <i class="fas fa-baby"></i>
+                    <span>Nome da Mãe: <strong>${data.NOME_MAE || 'Não disponível'}</strong></span>
+                </div>
+            `;
+            return html;
+        }
+
+        document.getElementById('cpf-button').addEventListener('click', async () => {
+            const cpfInput = document.getElementById('cpf-input');
+            const resultDiv = document.getElementById('cpf-result');
+            const button = document.getElementById('cpf-button');
+
+            const originalButtonContent = button.innerHTML;
+            button.innerHTML = '<div class="spinner"></div> Consultando...';
+            button.disabled = true;
+
+            const cpf = cpfInput.value;
+            const resultado = await consultarCPF(cpf);
+
+            resultDiv.classList.add('show');
+            resultDiv.classList.remove('error');
+
+            if (resultado.success) {
+                resultDiv.innerHTML = createResultHtml(resultado.data);
+            } else {
+                resultDiv.innerHTML = `<p>${resultado.error}</p>`;
+                resultDiv.classList.add('error');
+            }
+
+            button.innerHTML = originalButtonContent;
+            button.disabled = false;
+        });
+
+        // --- Dummy functions for other modules (Placa and Telefone) ---
+        async function runQuery(inputElementId, resultElementId, queryType) {
+            const input = document.getElementById(inputElementId).value.trim();
+            const resultDiv = document.getElementById(resultElementId);
+            const button = document.getElementById(resultElementId.replace('-result', '-button'));
+
+            if (!input) {
+                resultDiv.innerHTML = `<p>Por favor, digite o ${queryType}.</p>`;
+                resultDiv.classList.add('show', 'error');
+                return;
+            }
+            
+            const originalButtonContent = button.innerHTML;
+            button.innerHTML = '<div class="spinner"></div> Consultando...';
+            button.disabled = true;
+            resultDiv.classList.remove('error');
+            resultDiv.classList.add('show');
+            resultDiv.innerHTML = '<div class="spinner"></div> Consultando...';
+            
+            setTimeout(() => {
+                let formattedResult = '';
+                let dummyData = {};
+                
+                if (queryType === 'Placa') {
+                    dummyData = {
+                        placa: "ABC1B23",
+                        modelo: "Volkswagen Gol",
+                        ano: "2020",
+                        cor: "Preta",
+                        proprietario: "Maria da Souza"
+                    };
+                    formattedResult = `
+                        <div class="data-item">
+                            <i class="fas fa-car-side"></i>
+                            <span>Placa: <strong>${dummyData.placa}</strong></span>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-car-alt"></i>
+                            <span>Modelo: <strong>${dummyData.modelo}</strong></span>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Ano: <strong>${dummyData.ano}</strong></span>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-palette"></i>
+                            <span>Cor: <strong>${dummyData.cor}</strong></span>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Proprietário: <strong>${dummyData.proprietario}</strong></span>
+                        </div>
+                    `;
+                } else if (queryType === 'Telefone') {
+                    dummyData = {
+                        numero: "(11) 98765-4321",
+                        operadora: "TIM",
+                        regiao: "São Paulo/SP",
+                        titular: "Carlos Henrique"
+                    };
+                    formattedResult = `
+                        <div class="data-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <span>Número: <strong>${dummyData.numero}</strong></span>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-broadcast-tower"></i>
+                            <span>Operadora: <strong>${dummyData.operadora}</strong></span>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Região: <strong>${dummyData.regiao}</strong></span>
+                        </div>
+                        <div class="data-item">
+                            <i class="fas fa-user"></i>
+                            <span>Titular: <strong>${dummyData.titular}</strong></span>
+                        </div>
+                    `;
+                }
+                
+                resultDiv.innerHTML = formattedResult;
+                button.innerHTML = originalButtonContent;
+                button.disabled = false;
+            }, 2000);
+        }
+
+        document.getElementById('placa-button').addEventListener('click', () => runQuery('placa-input', 'placa-result', 'Placa'));
+        document.getElementById('telefone-button').addEventListener('click', () => runQuery('telefone-input', 'telefone-result', 'Telefone'));
+
+        document.addEventListener('DOMContentLoaded', () => {
+             document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+             const activeLink = document.querySelector('.nav-link[href="consultas.html"]');
+             if (activeLink) {
+                 activeLink.classList.add('active');
+             }
+        });
+    </script>
+</body>
+</html>
