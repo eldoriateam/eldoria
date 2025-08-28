@@ -326,6 +326,23 @@
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('user-info').textContent = user.email;
+
+                const lastSignInTime = user.metadata.lastSignInTime;
+                if (lastSignInTime) {
+                    const lastLoginDate = new Date(lastSignInTime);
+                    const options = {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    };
+                    const formattedDate = lastLoginDate.toLocaleDateString('pt-BR', options);
+                    const lastAccessElement = document.querySelector('.stat-card .stat-value');
+                    if (lastAccessElement) {
+                        lastAccessElement.textContent = formattedDate;
+                    }
+                }
             } else {
                 window.location.href = "index.html";
             }
