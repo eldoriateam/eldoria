@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilidades</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Variáveis de Tema */
+        :root {
+            --primary-bg: #000;
+            --secondary-bg: rgba(0, 0, 0, 0.7);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-color: #fff;
+            --secondary-text-color: #ccc;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --active-link-border: #888;
+            --hover-link-bg: rgba(255, 255, 255, 0.1);
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            --button-bg: #555;
+            --button-hover-bg: #777;
+        }
+
+        /* Tema Claro */
+        body.light-theme {
+            --primary-bg: #f4f7f9;
+            --secondary-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-color: #333;
+            --secondary-text-color: #555;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --active-link-border: #4a90e2;
+            --hover-link-bg: rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --button-bg: #4a90e2;
+            --button-hover-bg: #3a7bd2;
+        }
+
+        /* Estilos compartilhados */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            filter: grayscale(100%);
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        #video-bg, #image-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        #image-bg {
+            display: none;
+        }
+
+        .dashboard-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--secondary-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 1rem;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeIn 1s ease-in-out;
+            transition: background 0.5s ease, border-right 0.5s ease;
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-logo img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            color: var(--secondary-text-color);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease, border-left 0.3s ease;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: var(--hover-link-bg);
+            color: var(--text-color);
+            border-left: 3px solid var(--active-link-border);
+        }
+
+        .sidebar-nav a i {
+            font-size: 1.2rem;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--secondary-bg);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.5s ease, border-bottom 0.5s ease;
+        }
+
+        .search-bar {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            transition: background 0.5s ease;
+        }
+
+        .search-bar i {
+            color: var(--secondary-text-color);
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            padding-left: 0.5rem;
+            outline: none;
+            flex: 1;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            text-align: right;
+            transition: background 0.5s ease;
+        }
+
+        .dashboard-page {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .welcome-card {
+            background: var(--secondary-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            transition: background 0.5s ease, border 0.5s ease;
+        }
+        
+        /* Estilos específicos para as utilidades */
+        .utilidades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .util-card {
+            background: var(--secondary-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.5s ease;
+        }
+        
+        .util-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .util-card i {
+            font-size: 3rem;
+            color: var(--secondary-text-color);
+            margin-bottom: 1rem;
+        }
+        
+        .util-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .util-card p {
+            font-size: 0.9rem;
+            color: var(--secondary-text-color);
+        }
+
+        /* Estilos do Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .modal-content h3 {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .modal-content p {
+            color: var(--secondary-text-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-content input, .modal-content textarea, .modal-content select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 5px;
+            outline: none;
+            resize: vertical;
+        }
+
+        .modal-content select {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .modal-content button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            background-color: var(--button-bg);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .modal-content button:hover {
+            background-color: var(--button-hover-bg);
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--secondary-text-color);
+            cursor: pointer;
+            line-height: 1;
+            padding: 5px;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+        
+        .modal-close-btn:hover {
+            color: var(--text-color);
+            transform: translateX(-3px);
+        }
+        
+        .modal-close-btn span {
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        /* Estilos do Modal de Tema */
+        .theme-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .theme-option-preview {
+            width: 100px;
+            height: 60px;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        .theme-option-preview:hover,
+        .theme-option-preview.selected {
+            border-color: var(--active-link-border);
+        }
+
+        .theme-option-preview.clear-bg {
+            background-image: linear-gradient(45deg, var(--card-bg) 25%, transparent 25%, transparent 75%, var(--card-bg) 75%),
+                              linear-gradient(45deg, var(--card-bg) 25%, transparent 25%, transparent 75%, var(--card-bg) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        
+        /* Estilos dos campos de resultado */
+        .generated-data {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 5px;
+            word-break: break-all;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .generated-data strong {
+            color: var(--text-color);
+        }
+        
+        #qrcode-container {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        #qrcode-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .color-inputs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .color-inputs label {
+            font-size: 0.9rem;
+        }
+        .color-inputs input[type="color"] {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            background: transparent;
+        }
+        
+    </style>
+</head>
+<body>
+    <video id="video-bg" autoplay muted loop>
+        <source src="https://i.pinimg.com/originals/ca/0e/88/ca0e887559a3d5e1dd0ba81dc80c73d6.gif" type="video/mp4">
+        Seu navegador não suporta vídeos.
+    </video>
+    <img id="image-bg" src="" alt="Fundo personalizado">
+
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <img src="https://i.pinimg.com/736x/da/70/57/da70575a02519773e664ecfde7ac2211.jpg" alt="Logo da Eldoria">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="painel.html" class="nav-link"><i class="fas fa-desktop"></i> Painel</a>
+                <a href="consultas.html" class="nav-link"><i class="fas fa-search"></i> Consultas</a>
+                <a href="utilidades.html" class="nav-link active"><i class="fas fa-tools"></i> Utilidades</a>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <header class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Pesquisar...">
+                </div>
+                <label class="theme-switcher">
+                    <input type="checkbox" id="theme-toggle">
+                    <i class="fas fa-sun"></i>
+                </label>
+                <div class="info-card">
+                    <i class="fas fa-user-circle"></i> <span id="user-info">Carregando...</span>
+                </div>
+            </header>
+
+            <main class="dashboard-content">
+                <div class="dashboard-page">
+                    <div class="welcome-card">
+                        <h3>Ferramentas e Utilidades</h3>
+                        <p>Acesse ferramentas úteis e personalize o seu painel.</p>
+                    </div>
+
+                    <div class="utilidades-grid">
+                        <div class="util-card" data-tool="password-generator">
+                            <i class="fa-solid fa-key"></i>
+                            <h4>Gerador de Senhas</h4>
+                            <p>Crie senhas fortes e aleatórias para sua segurança.</p>
+                        </div>
+                        <div class="util-card" data-tool="ip-lookup">
+                            <i class="fa-solid fa-network-wired"></i>
+                            <h4>Buscador de IPs</h4>
+                            <p>Obtenha informações detalhadas sobre um endereço IP.</p>
+                        </div>
+                        <div class="util-card" data-tool="qrcode-generator">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <h4>Gerador de QR Code</h4>
+                            <p>Transforme qualquer texto ou link em um QR Code.</p>
+                        </div>
+                        <div class="util-card" data-tool="cpf-validator">
+                            <i class="fa-solid fa-file-invoice"></i>
+                            <h4>Validador de CPF</h4>
+                            <p>Verifique a validade de um número de CPF.</p>
+                        </div>
+                        <div class="util-card" data-tool="hash-generator">
+                            <i class="fa-solid fa-fingerprint"></i>
+                            <h4>Gerador de Hash</h4>
+                            <p>Crie hashes MD5 e SHA-256 para texto.</p>
+                        </div>
+                        <div class="util-card" data-tool="image-editor">
+                            <i class="fa-solid fa-image"></i>
+                            <h4>Editor de Imagem</h4>
+                            <p>Aplique filtros simples, como preto e branco.</p>
+                        </div>
+                        <div class="util-card" data-tool="color-generator">
+                            <i class="fa-solid fa-palette"></i>
+                            <h4>Gerador de Cores</h4>
+                            <p>Gere cores aleatórias em formatos Hex, RGB e HSL.</p>
+                        </div>
+                        <div class="util-card" data-tool="theme-customizer">
+                            <i class="fa-solid fa-image"></i>
+                            <h4>Trocar Fundo</h4>
+                            <p>Personalize o plano de fundo com sua imagem favorita.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="theme-customizer-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a class="modal-close-btn" href="#"><i class="fas fa-arrow-left"></i><span>Voltar</span></a>
+            <h3><i class="fa-solid fa-image"></i> Personalizar Tema de Fundo</h3>
+            <p>Escolha uma das imagens abaixo ou cole uma URL para usar como plano de fundo.</p>
+            
+            <div class="theme-options">
+                <div class="theme-option-preview clear-bg" data-bg-type="clear"></div>
+                <div class="theme-option-preview" data-bg-type="image" data-bg-url="https://images.unsplash.com/photo-1549490349-2ac823157297?q=80&w=1974&auto=format&fit=crop"></div>
+                <div class="theme-option-preview" data-bg-type="image" data-bg-url="https://images.unsplash.com/photo-1510931500206-a24c7f0775d7?q=80&w=1935&auto=format&fit=crop"></div>
+                <div class="theme-option-preview" data-bg-type="image" data-bg-url="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop"></div>
+            </div>
+
+            <p style="text-align: center; margin: 1.5rem 0 0.5rem;">ou</p>
+            <input type="text" id="custom-image-url" placeholder="Cole a URL da imagem aqui...">
+            <button id="apply-custom-image">Aplicar Imagem</button>
+        </div>
+    </div>
+    
+    <div id="password-generator-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a class="modal-close-btn" href="#"><i class="fas fa-arrow-left"></i><span>Voltar</span></a>
+            <h3><i class="fa-solid fa-key"></i> Gerador de Senhas</h3>
+            <p>Gere uma senha forte e segura. Escolha o comprimento e os tipos de caracteres que você quer usar.</p>
+            
+            <label for="password-length">Comprimento da Senha:</label>
+            <input type="number" id="password-length" value="12" min="8" max="32">
+            
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
+                <label><input type="checkbox" id="include-uppercase" checked> Incluir Letras Maiúsculas</label>
+                <label><input type="checkbox" id="include-lowercase" checked> Incluir Letras Minúsculas</label>
+                <label><input type="checkbox" id="include-numbers" checked> Incluir Números</label>
+                <label><input type="checkbox" id="include-symbols" checked> Incluir Símbolos</label>
+            </div>
+
+            <button id="generate-password-btn">Gerar Senha</button>
+            <div id="generated-password" class="generated-data">
+                Nenhuma senha gerada.
+            </div>
+        </div>
+    </div>
+
+    <div id="ip-lookup-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a class="modal-close-btn" href="#"><i class="fas fa-arrow-left"></i><span>Voltar</span></a>
+            <h3><i class="fa-solid fa-network-wired"></i> Buscador de IPs</h3>
+            <p>Digite um endereço IP para obter informações detalhadas como localização, provedor de internet e fuso horário.</p>
+            <input type="text" id="ip-input" placeholder="Ex: 8.8.8.8">
+            <button id="lookup-ip-btn">Buscar IP</button>
+            <div id="ip-info" class="generated-data">
+                Nenhum IP buscado.
+            </div>
+        </div>
+    </div>
+
+    <div id="qrcode-generator-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a class="modal-close-btn" href="#"><i class="fas fa-arrow-left"></i><span>Voltar</span></a>
+            <h3><i class="fa-solid fa-qrcode"></i> Gerador de QR Code</h3>
+            <p>Insira qualquer texto ou URL para gerar um QR Code.</p>
+            <input type="text" id="qrcode-input" placeholder="Digite seu texto ou URL...">
+            <div class="color-inputs">
+                <label>Cor do código: <input type="color" id="qrcode-color" value="#000000"></label>
+                <label>Cor de fundo: <input type="color" id="qrcode-bg-color" value="#ffffff"></label>
+            </div>
+            <button id="generate-qrcode-btn">Gerar QR Code</button>
+            <div id="qrcode-container"></div>
+        </div>
+    </div>
+
+    <div id="cpf-validator-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a class="modal-close-btn" href="#"><i class="fas fa-arrow-left"></i><span>Voltar</span></a>
+            <h3><i class="fa-solid fa-file-invoice"></i> Validador de CPF</h3>
+            <p>Insira um número de CPF para verificar se ele é válido. **Não insira CPFs reais.**</p>
+            <input type="text" id="cpf-input" placeholder="Ex: 123.456.789-00">
+            <button id="validate-cpf-btn">Validar CPF</button>
+            <div id="cpf-result" class="generated-data">
+                Aguardando um CPF...
+            </div>
+        </div>
+    </div>
+    
+    <div id="hash-generator-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a class="modal-close-btn" href="#"><i class="fas fa-arrow-left"></i><span>Voltar</span></a>
+            <h3><i class="fa-solid fa-fingerprint"></i> Gerador de Hash</h3>
+            <p>Digite um texto para gerar seu hash MD5 e SHA-256. Ideal para verificar a integridade de dados.</p>
+            <input type="text" id="hash-input" placeholder="Digite seu texto aqui...">
+            <button id="generate-hash-btn">Gerar Hash</button>
+            <div class="generated-data">
+                <strong>MD5:</strong> <span id="md5-hash"></span><br>
+                <strong>SHA-256:</strong> <span id="sha256-hash"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="image-editor-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a class="modal-close-btn" href="#"><i class="fas fa-arrow-left"></i><span>Voltar</span></a>
+            <h3><i class="fa-solid fa-image"></i> Editor de Imagem Simples</h3>
+            <p>Selecione uma imagem para aplicar o filtro preto e branco.</p>
+            <input type="file" id="image-upload" accept="image/*">
+            <canvas id="image-canvas" style="display: none; border: 1px solid var(--border-color); margin-top: 1rem;"></canvas>
+            <button id="apply-filter-btn" style="display: none;">Aplicar Filtro P&B</button>
+            <button id="download-image-btn" style="display: none; margin-top: 0.5rem;">Baixar Imagem</button>
+        </div>
+    </div>
+    
+    <div id="color-generator-modal" class="modal-overlay">
+        <div class="modal-content">
+            <a class="modal-close-btn" href="#"><i class="fas fa-arrow-left"></i><span>Voltar</span></a>
+            <h3><i class="fa-solid fa-palette"></i> Gerador de Cores Aleatórias</h3>
+            <p>Clique no botão para gerar uma nova cor aleatória.</p>
+            <div id="color-preview" style="width: 100%; height: 100px; border-radius: 5px; margin-top: 1rem;"></div>
+            <button id="generate-color-btn">Gerar Nova Cor</button>
+            <div class="generated-data">
+                <strong>Hex:</strong> <span id="color-hex"></span><br>
+                <strong>RGB:</strong> <span id="color-rgb"></span><br>
+                <strong>HSL:</strong> <span id="color-hsl"></span>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAf4XkKKukT8iIShBeGVycuWDTpOZoYutA",
+            authDomain: "eldoria-d8f4b.firebaseapp.com",
+            projectId: "eldoria-d8f4b",
+            storageBucket: "eldoria-d8f4b.firebasestorage.app",
+            messagingSenderId: "451330040914",
+            appId: "1:451330040914:web:25e74e43f210608af3eb8b"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        function handleAuthStateChange(user) {
+            if (user) {
+                document.getElementById('user-info').textContent = user.email;
+            } else {
+                window.location.href = "index.html";
+            }
+        }
+
+        function applyBackground(bgType, bgUrl = null) {
+            const videoBg = document.getElementById('video-bg');
+            const imageBg = document.getElementById('image-bg');
+        
+            if (bgType === 'image' && bgUrl) {
+                videoBg.style.display = 'none';
+                imageBg.style.display = 'block';
+                imageBg.src = bgUrl;
+                localStorage.setItem('background', 'image');
+                localStorage.setItem('backgroundImageUrl', bgUrl);
+            } else {
+                videoBg.style.display = 'block';
+                imageBg.style.display = 'none';
+                localStorage.setItem('background', 'video');
+                localStorage.removeItem('backgroundImageUrl');
+            }
+        }
+        
+        function loadSavedBackground() {
+            const savedBgType = localStorage.getItem('background');
+            const savedBgUrl = localStorage.getItem('backgroundImageUrl');
+            if (savedBgType === 'image' && savedBgUrl) {
+                applyBackground('image', savedBgUrl);
+            } else {
+                applyBackground('video');
+            }
+        }
+
+        function setupThemeSwitcher() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            const themeIcon = document.querySelector('.theme-switcher i');
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                body.classList.add(savedTheme + '-theme');
+                themeToggle.checked = (savedTheme === 'light');
+                themeIcon.classList.toggle('fa-sun', savedTheme === 'light');
+                themeIcon.classList.toggle('fa-moon', savedTheme === 'dark');
+            } else {
+                body.classList.add('dark-theme');
+                themeIcon.classList.add('fa-moon');
+            }
+
+            themeToggle.addEventListener('change', () => {
+                if (themeToggle.checked) {
+                    body.classList.remove('dark-theme');
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                } else {
+                    body.classList.remove('light-theme');
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                }
+            });
+        }
+
+        function setupModals() {
+            const utilCards = document.querySelectorAll('.util-card');
+            const modalOverlays = document.querySelectorAll('.modal-overlay');
+            const closeButtons = document.querySelectorAll('.modal-close-btn');
+
+            utilCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const toolName = card.dataset.tool;
+                    const modalId = `${toolName}-modal`;
+                    document.getElementById(modalId).style.display = 'flex';
+                });
+            });
+
+            closeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const modal = button.closest('.modal-overlay');
+                    modal.style.display = 'none';
+                });
+            });
+
+            modalOverlays.forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        function setupThemeCustomizer() {
+            const themeOptionPreviews = document.querySelectorAll('.theme-option-preview');
+            const customImageUrlInput = document.getElementById('custom-image-url');
+            const applyCustomImageBtn = document.getElementById('apply-custom-image');
+
+            themeOptionPreviews.forEach(preview => {
+                const bgUrl = preview.dataset.bgUrl;
+                if (bgUrl) {
+                    preview.style.backgroundImage = `url(${bgUrl})`;
+                }
+
+                preview.addEventListener('click', () => {
+                    const bgType = preview.dataset.bgType;
+                    const bgUrl = preview.dataset.bgUrl;
+                    
+                    themeOptionPreviews.forEach(p => p.classList.remove('selected'));
+                    preview.classList.add('selected');
+
+                    applyBackground(bgType, bgUrl);
+                });
+            });
+
+            applyCustomImageBtn.addEventListener('click', () => {
+                const url = customImageUrlInput.value;
+                if (url) {
+                    applyBackground('image', url);
+                    themeOptionPreviews.forEach(p => p.classList.remove('selected'));
+                } else {
+                    alert('Por favor, insira uma URL válida.');
+                }
+            });
+        }
+        
+        function setupPasswordGenerator() {
+            const lengthInput = document.getElementById('password-length');
+            const uppercaseCheckbox = document.getElementById('include-uppercase');
+            const lowercaseCheckbox = document.getElementById('include-lowercase');
+            const numbersCheckbox = document.getElementById('include-numbers');
+            const symbolsCheckbox = document.getElementById('include-symbols');
+            const generateBtn = document.getElementById('generate-password-btn');
+            const generatedPasswordDiv = document.getElementById('generated-password');
+
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const numbers = '0123456789';
+            const symbols = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
+
+            generateBtn.addEventListener('click', () => {
+                const length = parseInt(lengthInput.value);
+                const useUppercase = uppercaseCheckbox.checked;
+                const useLowercase = lowercaseCheckbox.checked;
+                const useNumbers = numbersCheckbox.checked;
+                const useSymbols = symbolsCheckbox.checked;
+                
+                let characters = '';
+                if (useUppercase) characters += uppercase;
+                if (useLowercase) characters += lowercase;
+                if (useNumbers) characters += numbers;
+                if (useSymbols) characters += symbols;
+                
+                if (characters.length === 0) {
+                    generatedPasswordDiv.textContent = 'Selecione pelo menos um tipo de caractere.';
+                    return;
+                }
+                
+                let password = '';
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * characters.length);
+                    password += characters[randomIndex];
+                }
+                
+                generatedPasswordDiv.textContent = password;
+            });
+        }
+        
+        function setupIpLookup() {
+            const ipInput = document.getElementById('ip-input');
+            const lookupBtn = document.getElementById('lookup-ip-btn');
+            const ipInfoDiv = document.getElementById('ip-info');
+
+            lookupBtn.addEventListener('click', () => {
+                const ipAddress = ipInput.value;
+                if (!ipAddress) {
+                    ipInfoDiv.textContent = 'Por favor, insira um endereço IP.';
+                    return;
+                }
+                
+                ipInfoDiv.textContent = 'Buscando...';
+                
+                fetch(`http://ip-api.com/json/${ipAddress}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const infoText = `
+                                <strong>País:</strong> ${data.country}
+                                <strong>Região:</strong> ${data.regionName}
+                                <strong>Cidade:</strong> ${data.city}
+                                <strong>Provedor:</strong> ${data.isp}
+                                <strong>Latitude:</strong> ${data.lat}
+                                <strong>Longitude:</strong> ${data.lon}
+                            `;
+                            ipInfoDiv.innerHTML = infoText;
+                        } else {
+                            ipInfoDiv.textContent = 'Não foi possível encontrar informações para este IP.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar IP:', error);
+                        ipInfoDiv.textContent = 'Ocorreu um erro ao buscar o IP. Tente novamente mais tarde.';
+                    });
+            });
+        }
+
+        function setupQrcodeGenerator() {
+            const qrcodeInput = document.getElementById('qrcode-input');
+            const qrcodeColorInput = document.getElementById('qrcode-color');
+            const qrcodeBgColorInput = document.getElementById('qrcode-bg-color');
+            const generateBtn = document.getElementById('generate-qrcode-btn');
+            const qrcodeContainer = document.getElementById('qrcode-container');
+
+            generateBtn.addEventListener('click', () => {
+                const text = qrcodeInput.value;
+                const color = qrcodeColorInput.value.replace('#', '');
+                const bgColor = qrcodeBgColorInput.value.replace('#', '');
+                
+                if (!text) {
+                    qrcodeContainer.innerHTML = 'Por favor, insira um texto ou URL.';
+                    return;
+                }
+                
+                const imageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(text)}&color=${color}&bgcolor=${bgColor}`;
+                qrcodeContainer.innerHTML = `<img src="${imageUrl}" alt="QR Code">`;
+            });
+        }
+
+        function setupCpfValidator() {
+            const cpfInput = document.getElementById('cpf-input');
+            const validateBtn = document.getElementById('validate-cpf-btn');
+            const cpfResultDiv = document.getElementById('cpf-result');
+
+            function validateCPF(cpf) {
+                cpf = cpf.replace(/[^\d]+/g, '');
+                if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+
+                let sum = 0;
+                let rest;
+
+                for (let i = 1; i <= 9; i++) sum = sum + parseInt(cpf.substring(i - 1, i)) * (11 - i);
+                rest = (sum * 10) % 11;
+                if ((rest === 10) || (rest === 11)) rest = 0;
+                if (rest !== parseInt(cpf.substring(9, 10))) return false;
+
+                sum = 0;
+                for (let i = 1; i <= 10; i++) sum = sum + parseInt(cpf.substring(i - 1, i)) * (12 - i);
+                rest = (sum * 10) % 11;
+                if ((rest === 10) || (rest === 11)) rest = 0;
+                if (rest !== parseInt(cpf.substring(10, 11))) return false;
+
+                return true;
+            }
+
+            validateBtn.addEventListener('click', () => {
+                const cpf = cpfInput.value;
+                if (validateCPF(cpf)) {
+                    cpfResultDiv.innerHTML = '<strong>Status:</strong> <span style="color: #2ecc71;">Válido</span>';
+                } else {
+                    cpfResultDiv.innerHTML = '<strong>Status:</strong> <span style="color: #e74c3c;">Inválido</span>';
+                }
+            });
+        }
+        
+        // Novo: Gerador de Hash
+        function setupHashGenerator() {
+            const input = document.getElementById('hash-input');
+            const generateBtn = document.getElementById('generate-hash-btn');
+            const md5Output = document.getElementById('md5-hash');
+            const sha256Output = document.getElementById('sha256-hash');
+            
+            generateBtn.addEventListener('click', () => {
+                const text = input.value;
+                if (!text) {
+                    md5Output.textContent = 'Digite algum texto para gerar o hash.';
+                    sha256Output.textContent = '...';
+                    return;
+                }
+
+                // Gerar MD5 (simulado, pois MD5 não é seguro e o uso não é recomendado)
+                const md5Hash = md5(text);
+                
+                // Gerar SHA-256
+                const sha256Hash = sha256(text);
+                
+                md5Output.textContent = md5Hash;
+                sha256Output.textContent = sha256Hash;
+            });
+
+            // Simples função MD5 para demonstração
+            function md5(string) {
+                function RotateLeft(lValue, iShiftBits) {
+                    return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
+                }
+                function AddUnsigned(lX, lY) {
+                    let lX4, lY4, lResult;
+                    lX4 = (lX & 0x40000000) >>> 30;
+                    lY4 = (lY & 0x40000000) >>> 30;
+                    lX = (lX & 0x3FFFFFFF) + (lY & 0x3FFFFFFF);
+                    lResult = (lX4 + lY4) + (lX >>> 30);
+                    return lResult << 30 | (lX & 0x3FFFFFFF);
+                }
+                function F(x, y, z) { return (x & y) | ((~x) & z); }
+                function G(x, y, z) { return (x & z) | (y & (~z)); }
+                function H(x, y, z) { return (x ^ y ^ z); }
+                function I(x, y, z) { return (y ^ (x | (~z))); }
+                function FF(a, b, c, d, x, s, ac) {
+                    a = AddUnsigned(a, AddUnsigned(AddUnsigned(F(b, c, d), x), ac));
+                    return AddUnsigned(RotateLeft(a, s), b);
+                }
+                function GG(a, b, c, d, x, s, ac) {
+                    a = AddUnsigned(a, AddUnsigned(AddUnsigned(G(b, c, d), x), ac));
+                    return AddUnsigned(RotateLeft(a, s), b);
+                }
+                function HH(a, b, c, d, x, s, ac) {
+                    a = AddUnsigned(a, AddUnsigned(AddUnsigned(H(b, c, d), x), ac));
+                    return AddUnsigned(RotateLeft(a, s), b);
+                }
+                function II(a, b, c, d, x, s, ac) {
+                    a = AddUnsigned(a, AddUnsigned(AddUnsigned(I(b, c, d), x), ac));
+                    return AddUnsigned(RotateLeft(a, s), b);
+                }
+                function ConvertToWordArray(string) {
+                    let lWordCount;
+                    let lMessageLength = string.length;
+                    let lNumberOfWords_l = ((lMessageLength + 8) >>> 6) + 1;
+                    let lWordArray = Array(lNumberOfWords_l * 16);
+                    let lBytePosition = 0;
+                    let lByteCount = 0;
+                    for (let i = 0; i < lNumberOfWords_l * 16; i++) lWordArray[i] = 0;
+                    for (let i = 0; i < lMessageLength; i++) {
+                        lByteCount++;
+                        lWordArray[i >>> 2] |= string.charCodeAt(i) << ((i % 4) * 8);
+                    }
+                    lWordArray[i >>> 2] |= 0x80 << ((i % 4) * 8);
+                    lWordArray[lNumberOfWords_l * 16 - 2] = lMessageLength << 3;
+                    return lWordArray;
+                }
+                function WordToHex(lValue) {
+                    let WordToHexValue = "";
+                    let WordToHexValue_temp = "";
+                    let lByte;
+                    let lCount;
+                    for (lCount = 0; lCount <= 3; lCount++) {
+                        lByte = (lValue >>> (lCount * 8)) & 255;
+                        WordToHexValue_temp = "0" + lByte.toString(16);
+                        WordToHexValue = WordToHexValue + WordToHexValue_temp.substr(WordToHexValue_temp.length - 2, 2);
+                    }
+                    return WordToHexValue;
+                }
+                let x = Array();
+                let k, AA, BB, CC, DD, a, b, c, d;
+                let S11 = 7, S12 = 12, S13 = 17, S14 = 22;
+                let S21 = 5, S22 = 9, S23 = 14, S24 = 20;
+                let S31 = 4, S32 = 11, S33 = 16, S34 = 23;
+                let S41 = 6, S42 = 10, S43 = 15, S44 = 21;
+                x = ConvertToWordArray(string);
+                a = 0x67452301; b = 0xEFCDAB89; c = 0x98BADCFE; d = 0x10325476;
+                for (k = 0; k < x.length; k += 16) {
+                    AA = a; BB = b; CC = c; DD = d;
+                    a = FF(a, b, c, d, x[k + 0], S11, 0xD76AA478); d = FF(d, a, b, c, x[k + 1], S12, 0xE8C7B756);
+                    c = FF(c, d, a, b, x[k + 2], S13, 0x242070DB); b = FF(b, c, d, a, x[k + 3], S14, 0xC1BDCEEE);
+                    a = FF(a, b, c, d, x[k + 4], S11, 0xF57C0FAF); d = FF(d, a, b, c, x[k + 5], S12, 0x4787C62A);
+                    c = FF(c, d, a, b, x[k + 6], S13, 0xA8304613); b = FF(b, c, d, a, x[k + 7], S14, 0xFD469501);
+                    a = FF(a, b, c, d, x[k + 8], S11, 0x698098D8); d = FF(d, a, b, c, x[k + 9], S12, 0x8B44F7AF);
+                    c = FF(c, d, a, b, x[k + 10], S13, 0xFFFF5BB1); b = FF(b, c, d, a, x[k + 11], S14, 0x895CD7BE);
+                    a = FF(a, b, c, d, x[k + 12], S11, 0x6B901122); d = FF(d, a, b, c, x[k + 13], S12, 0xFD987193);
+                    c = FF(c, d, a, b, x[k + 14], S13, 0xA679438E); b = FF(b, c, d, a, x[k + 15], S14, 0x49B40821);
+                    a = GG(a, b, c, d, x[k + 1], S21, 0xF61E2562); d = GG(d, a, b, c, x[k + 6], S22, 0xC040B340);
+                    c = GG(c, d, a, b, x[k + 11], S23, 0x265E5A51); b = GG(b, c, d, a, x[k + 0], S24, 0xE9B6C7AA);
+                    a = GG(a, b, c, d, x[k + 5], S21, 0xD62F105D); d = GG(d, a, b, c, x[k + 10], S22, 0x2441453);
+                    c = GG(c, d, a, b, x[k + 15], S23, 0xD8A1E681); b = GG(b, c, d, a, x[k + 4], S24, 0xE7D3FBC8);
+                    a = GG(a, b, c, d, x[k + 9], S21, 0x21E1CDE6); d = GG(d, a, b, c, x[k + 14], S22, 0xC33707D6);
+                    c = GG(c, d, a, b, x[k + 3], S23, 0xF4D50D87); b = GG(b, c, d, a, x[k + 8], S24, 0x455A14ED);
+                    a = GG(a, b, c, d, x[k + 13], S21, 0xA9E3E905); d = GG(d, a, b, c, x[k + 2], S22, 0xFCEFA3F8);
+                    c = GG(c, d, a, b, x[k + 7], S23, 0x676F02D9); b = GG(b, c, d, a, x[k + 12], S24, 0x8D2A4C8A);
+                    a = HH(a, b, c, d, x[k + 5], S31, 0xFFFA3942); d = HH(d, a, b, c, x[k + 8], S32, 0x8771F681);
+                    c = HH(c, d, a, b, x[k + 11], S33, 0x6D9D6122); b = HH(b, c, d, a, x[k + 14], S34, 0xFDE5380C);
+                    a = HH(a, b, c, d, x[k + 1], S31, 0xA4BEEA44); d = HH(d, a, b, c, x[k + 4], S32, 0x4BDECFA9);
+                    c = HH(c, d, a, b, x[k + 7], S33, 0xF6BB4B60); b = HH(b, c, d, a, x[k + 10], S34, 0xBEBFBC70);
+                    a = HH(a, b, c, d, x[k + 13], S31, 0x289B7EC6); d = HH(d, a, b, c, x[k + 0], S32, 0xEAA127FA);
+                    c = HH(c, d, a, b, x[k + 3], S33, 0xD4EF3085); b = HH(b, c, d, a, x[k + 6], S34, 0x4881D05);
+                    a = HH(a, b, c, d, x[k + 9], S31, 0xD9D4D039); d = HH(d, a, b, c, x[k + 12], S32, 0xE6DB99E5);
+                    c = HH(c, d, a, b, x[k + 15], S33, 0x1FA27CF8); b = HH(b, c, d, a, x[k + 2], S34, 0xC4AC5665);
+                    a = II(a, b, c, d, x[k + 0], S41, 0xF4292244); d = II(d, a, b, c, x[k + 7], S42, 0x432AFF97);
+                    c = II(c, d, a, b, x[k + 14], S43, 0xAB9423A7); b = II(b, c, d, a, x[k + 5], S44, 0xFC93A039);
+                    a = II(a, b, c, d, x[k + 12], S41, 0x655B59C3); d = II(d, a, b, c, x[k + 3], S42, 0x8F0CCC92);
+                    c = II(c, d, a, b, x[k + 10], S43, 0xFFEFF47D); b = II(b, c, d, a, x[k + 1], S44, 0x85845DD1);
+                    a = II(a, b, c, d, x[k + 8], S41, 0x6FA87E4F); d = II(d, a, b, c, x[k + 15], S42, 0xFE2CE6E0);
+                    c = II(c, d, a, b, x[k + 6], S43, 0xA3014314); b = II(b, c, d, a, x[k + 13], S44, 0x4E0811A1);
+                    a = II(a, b, c, d, x[k + 4], S41, 0xF7537E82); d = II(d, a, b, c, x[k + 11], S42, 0xBD3AF235);
+                    c = II(c, d, a, b, x[k + 2], S43, 0x2AD7D2BB); b = II(b, c, d, a, x[k + 9], S44, 0xEB86D391);
+                    a = AddUnsigned(a, AA); b = AddUnsigned(b, BB); c = AddUnsigned(c, CC); d = AddUnsigned(d, DD);
+                }
+                let temp = WordToHex(a) + WordToHex(b) + WordToHex(c) + WordToHex(d);
+                return temp.toLowerCase();
+            }
+        }
+
+        // Novo: Editor de Imagem Simples (P&B)
+        function setupImageEditor() {
+            const uploadInput = document.getElementById('image-upload');
+            const canvas = document.getElementById('image-canvas');
+            const ctx = canvas.getContext('2d');
+            const applyBtn = document.getElementById('apply-filter-btn');
+            const downloadBtn = document.getElementById('download-image-btn');
+            
+            let originalImage = null;
+
+            uploadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            originalImage = img;
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            ctx.drawImage(img, 0, 0);
+                            canvas.style.display = 'block';
+                            applyBtn.style.display = 'block';
+                            downloadBtn.style.display = 'none';
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            applyBtn.addEventListener('click', () => {
+                if (!originalImage) return;
+                
+                // Redesenhar a imagem original
+                ctx.drawImage(originalImage, 0, 0);
+                
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+                    data[i] = data[i + 1] = data[i + 2] = gray;
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+                downloadBtn.style.display = 'block';
+            });
+            
+            downloadBtn.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.download = 'imagem-editada.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+        
+        // Novo: Gerador de Cores Aleatórias
+        function setupColorGenerator() {
+            const generateBtn = document.getElementById('generate-color-btn');
+            const previewDiv = document.getElementById('color-preview');
+            const hexSpan = document.getElementById('color-hex');
+            const rgbSpan = document.getElementById('color-rgb');
+            const hslSpan = document.getElementById('color-hsl');
+        
+            function getRandomColor() {
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                
+                const hex = `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+                const rgb = `rgb(${r}, ${g}, ${b})`;
+                
+                r /= 255;
+                g /= 255;
+                b /= 255;
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+                
+                if (max === min) {
+                    h = s = 0; // Grayscale
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+                const hsl = `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+        
+                return { hex, rgb, hsl };
+            }
+            
+            function updateColor() {
+                const { hex, rgb, hsl } = getRandomColor();
+                previewDiv.style.backgroundColor = hex;
+                hexSpan.textContent = hex;
+                rgbSpan.textContent = rgb;
+                hslSpan.textContent = hsl;
+            }
+            
+            generateBtn.addEventListener('click', updateColor);
+            
+            // Gerar uma cor inicial ao carregar o modal
+            updateColor();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            firebase.auth().onAuthStateChanged(handleAuthStateChange);
+
+            const currentPath = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.href.includes(currentPath)) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            loadSavedBackground();
+            setupThemeSwitcher();
+            setupModals();
+            setupThemeCustomizer();
+            setupPasswordGenerator();
+            setupIpLookup();
+            setupQrcodeGenerator();
+            setupCpfValidator();
+            setupHashGenerator();
+            setupImageEditor();
+            setupColorGenerator();
+        });
+    </script>
+</body>
+</html>
