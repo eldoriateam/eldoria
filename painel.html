@@ -97,7 +97,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Adicionado para evitar que o conteúdo exceda */
+            overflow: hidden;
         }
 
         .header {
@@ -141,17 +141,10 @@
         }
 
         .dashboard-page {
-            display: none;
             padding: 2rem;
             flex: 1;
             overflow-y: auto;
             animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .dashboard-page.active {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
         }
 
         .welcome-card {
@@ -161,6 +154,7 @@
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             line-height: 1.6;
+            margin-bottom: 2rem;
         }
 
         .welcome-card h3 {
@@ -225,6 +219,7 @@
             padding: 1.5rem;
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
         }
 
         .recent-activity-list h3 {
@@ -274,6 +269,7 @@
             <nav class="sidebar-nav">
                 <a href="painel.html" class="nav-link active"><i class="fas fa-desktop"></i> Painel</a>
                 <a href="consultas.html" class="nav-link"><i class="fas fa-search"></i> Consultas</a>
+                <a href="utilidades.html" class="nav-link"><i class="fas fa-tools"></i> Utilidades</a>
             </nav>
         </div>
 
@@ -289,7 +285,7 @@
             </header>
 
             <main class="dashboard-content">
-                <div class="dashboard-page active" id="page-painel">
+                <div class="dashboard-page">
                     <div class="welcome-card">
                         <h3>Bem-vindo de volta!</h3>
                         <p>Este é o seu painel de controle. Aqui você encontra um resumo rápido das suas atividades e informações principais.</p>
@@ -308,8 +304,6 @@
 
                     <div class="recent-activity-list">
                         <h3>Atividade Recente</h3>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </main>
@@ -338,11 +332,15 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
-            const activeLink = document.querySelector('.nav-link[href="painel.html"]');
-            if (activeLink) {
-                activeLink.classList.add('active');
-            }
+            const currentPath = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.href.includes(currentPath)) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
         });
     </script>
 </body>
